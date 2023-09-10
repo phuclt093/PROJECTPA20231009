@@ -1,4 +1,7 @@
 
+import 'package:baseapp/commons/MessageType.dart';
+import 'package:baseapp/pages/common/toast_message.dart';
+import 'package:baseapp/utils/localizationUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:baseapp/utils/commonUtil.dart';
@@ -77,8 +80,13 @@ class HttpHelper {
       http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 401) {
-        Navigator.pushNamedAndRemoveUntil(
-            context!, '/login', ModalRoute.withName('/login'));
+        ToastMessage.showColoredToast(LocalizationUtil.translate("Error401_Message"), MessageType.ERROR);
+        fnWorking(true);
+        return "";
+      }
+
+      if (response.statusCode == 500) {
+        ToastMessage.showColoredToast(LocalizationUtil.translate("Error500_Message"),  MessageType.ERROR);
         fnWorking(true);
         return "";
       }
@@ -88,9 +96,9 @@ class HttpHelper {
         fnWorking(true);
         return result;
       } else {
+        ToastMessage.showColoredToast(LocalizationUtil.translate("Error_Message"),  MessageType.ERROR);
         fnWorking(true);
         return result;
-        //ToastMessage.showColoredToast("Please select grade!", "WARNING");
       }
     } else {
       // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);

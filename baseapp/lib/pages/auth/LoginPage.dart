@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:baseapp/commons/ConstValue.dart';
+import 'package:baseapp/commons/MessageType.dart';
 import 'package:baseapp/pages/auth/SignUpPage.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
@@ -43,8 +44,8 @@ class LoginPageState extends State<LoginPage>
   bool isTermsShow = false;
   String codeLangue = "vi";
 
-  final TextEditingController userNameEdit = TextEditingController();
-  final TextEditingController passWordEdit = TextEditingController();
+  final TextEditingController emailEdit = TextEditingController();
+  final TextEditingController passwordEdit = TextEditingController();
   FocusNode emailFocus = FocusNode();
   FocusNode passFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -144,9 +145,9 @@ class LoginPageState extends State<LoginPage>
                       },
                       colorFont: ThemeColor.colorFont_TextBox,
                       colorFontHint: ThemeColor.colorHint_TextBox,
-                      textController: userNameEdit,
+                      textController: emailEdit,
                       onFieldSubmitFunc: (v) {
-                        _fieldFocusChange(context, emailFocus, passFocus);
+                        CommonUtil.ChangeFocus(context, emailFocus, passFocus);
                       },
                       hintLabel: LocalizationUtil.translate('lblEmail')!),
                 ),
@@ -169,7 +170,7 @@ class LoginPageState extends State<LoginPage>
                     },
                     colorFont: ThemeColor.colorFont_TextBox,
                     colorFontHint: ThemeColor.colorHint_TextBox,
-                    textController: passWordEdit,
+                    textController: passwordEdit,
                     onFieldSubmitFunc: (v) {},
                     hintLabel: LocalizationUtil.translate('lblPassword')!,
                     suffixIcon: Padding(
@@ -220,12 +221,7 @@ class LoginPageState extends State<LoginPage>
                           setState(() {
                             finishLoading = true;
                           });
-
-                          var deviceID = await Authentication.getDeviceID();
-                          submitLoginForm(
-                              _username, _password, deviceID, false);
-
-                          //signInWithEmailPassword(email!.trim(), pass!);
+                          fnLogin();
                         } else {
                           // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
                         }
@@ -269,9 +265,9 @@ class LoginPageState extends State<LoginPage>
     setFinishWorking(false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userNameEdit.text = prefs.getString("initUsername") ?? "";
-      _username = userNameEdit.text;
-      _password = passWordEdit.text;
+      emailEdit.text = prefs.getString("initUsername") ?? "";
+      _username = emailEdit.text;
+      _password = passwordEdit.text;
 
       setFinishWorking(true);
     });
@@ -309,83 +305,143 @@ class LoginPageState extends State<LoginPage>
   //   }
   // }
 
-  Future submitLoginForm(String usernameval, String passwordval,
-      String deviceid, bool isLoginByBiometrics) async {
+  Future fnLogin() async {
+    if (emailEdit.text.isEmpty) {
+      ToastMessage.showColoredToast(
+          LocalizationUtil.translate('lblEmailEmpty_Message')!, MessageType.ERROR);
+      return;
+    }
+
+    if (CommonUtil.CheckEmailFormat(emailEdit.text) == false) {
+      ToastMessage.showColoredToast(
+          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!, MessageType.ERROR);
+      return;
+    }
+
+    if (passwordEdit.text.isEmpty) {
+      ToastMessage.showColoredToast(
+          LocalizationUtil.translate('lblPasswordEmpty_Message')!, MessageType.ERROR);
+      return;
+    }
+
     _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     if (_isNetworkAvail) {
-      String ulr = "login/checklogin";
+      String ulr = ConstValue.api_LoginCheckURL;
       setFinishWorking(false);
       Map<String, String> parameters = {
-        'username': usernameval,
-        'password': passwordval,
-        'deviceid': deviceid
+        'email': emailEdit.text.toString(),
+        'pass': passwordEdit.text.toString(),
       };
 
       String resultStr = await HttpHelper.fetchPost(
-        context: context,
-        fnWorking: setFinishWorking,
-        parameters: parameters,
-        isAuth: false,
-        ulr: ulr
-      );
+          context: context,
+          fnWorking: setFinishWorking,
+          parameters: parameters,
+          isAuth: false,
+          ulr: ulr);
 
       try {
         final json = jsonDecode(resultStr);
-        var token = Token.fromJson(json);
-        if (token.idToken != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-
-          setState(() {
-            prefs.setString("id_token", token.idToken ?? "");
-            prefs.setString("username", token.username ?? "");
-            prefs.setString("userTypeID", token.userTypeID ?? "");
-            prefs.setString("email", token.email ?? "");
-            prefs.setString("fullName", token.fullName ?? "");
-            prefs.setString("userType", token.userType ?? "");
-            prefs.setString("passwordTest", _password ?? "");
-            prefs.setString("hashinfo", token.hashinfo ?? "");
-
-            if (!isLoginByBiometrics) {
-              prefs.setString("username_bi", _username);
-              prefs.setString("password_bi", _password);
-
-              if (isCheckedRememberMe) {
-                prefs.setString("initUsername", _username);
-                prefs.setString("initPassword", _password);
-                prefs.setString("initUserType", userType ?? "");
-              } else {
-                prefs.setString("initUsername", "");
-                prefs.setString("initPassword", "");
-                prefs.setString("initUserType", "");
-              }
-            }
-          });
-
-          Navigator.pushNamedAndRemoveUntil(
-              context, '/home', ModalRoute.withName('/home'));
-          ToastMessage.showColoredToast(
-              LocalizationUtil.translate('login_msg')!, "OK");
-        } else {
-          ToastMessage.showColoredToast(json["message"], "ERROR");
+        var token = Token.fromJsonLogin(json);
+        if(token != null){
+          if (token.result == "OK") {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!), MessageType.OK);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login', ModalRoute.withName('/login'));
+          } else {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
+            setFinishWorking(true);
+          }
+        }
+        else {
+          // ToastMessage.showColoredToast(
+          //     LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           setFinishWorking(true);
         }
       } catch (e) {
-        ToastMessage.showColoredToast(
-            LocalizationUtil.translate("lblLoginFailed")!, "ERROR");
+        // ToastMessage.showColoredToast(
+        //     LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
       } finally {
         setFinishWorking(true);
       }
     } else {
-      // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
+
     }
+
+    // _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+    // if (_isNetworkAvail) {
+    //   String ulr = "login/checklogin";
+    //   setFinishWorking(false);
+    //   Map<String, String> parameters = {
+    //     'username': usernameval,
+    //     'password': passwordval,
+    //     'deviceid': deviceid
+    //   };
+    //
+    //   String resultStr = await HttpHelper.fetchPost(
+    //     context: context,
+    //     fnWorking: setFinishWorking,
+    //     parameters: parameters,
+    //     isAuth: false,
+    //     ulr: ulr
+    //   );
+    //
+    //   try {
+    //     final json = jsonDecode(resultStr);
+    //     var token = Token.fromJson(json);
+    //     if (token.idToken != null) {
+    //       SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+    //       setState(() {
+    //         prefs.setString("id_token", token.idToken ?? "");
+    //         prefs.setString("username", token.username ?? "");
+    //         prefs.setString("userTypeID", token.userTypeID ?? "");
+    //         prefs.setString("email", token.email ?? "");
+    //         prefs.setString("fullName", token.fullName ?? "");
+    //         prefs.setString("userType", token.userType ?? "");
+    //         prefs.setString("passwordTest", _password ?? "");
+    //         prefs.setString("hashinfo", token.hashinfo ?? "");
+    //
+    //         if (!isLoginByBiometrics) {
+    //           prefs.setString("username_bi", _username);
+    //           prefs.setString("password_bi", _password);
+    //
+    //           if (isCheckedRememberMe) {
+    //             prefs.setString("initUsername", _username);
+    //             prefs.setString("initPassword", _password);
+    //             prefs.setString("initUserType", userType ?? "");
+    //           } else {
+    //             prefs.setString("initUsername", "");
+    //             prefs.setString("initPassword", "");
+    //             prefs.setString("initUserType", "");
+    //           }
+    //         }
+    //       });
+    //
+    //       Navigator.pushNamedAndRemoveUntil(
+    //           context, '/home', ModalRoute.withName('/home'));
+    //       ToastMessage.showColoredToast(
+    //           LocalizationUtil.translate('login_msg')!, "OK");
+    //     } else {
+    //       ToastMessage.showColoredToast(json["message"], "ERROR");
+    //       setFinishWorking(true);
+    //     }
+    //   } catch (e) {
+    //     ToastMessage.showColoredToast(
+    //         LocalizationUtil.translate("lblLoginFailed")!, "ERROR");
+    //     setFinishWorking(true);
+    //   } finally {
+    //     setFinishWorking(true);
+    //   }
+    // } else {
+    //   // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
+    // }
   }
 
-  _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
+
 
   void _toggle() {
     setState(() {

@@ -20,5 +20,10 @@
     "PasswordSpecialcaseError_Message": "Mật khẩu phải có ít nhất 1 ký tự in đặc biệt",
     "PasswordUppercaseError_Message": "Mật khẩu phải có ít nhất 2 ký tự in Hoa",
     "DangKyThanhCongVuiLongXacThucEmail!": "Đăng ký thành công vui lòng xác thực email!",
-    "UserDaTonTaiVuiLongDangNhap": "Username/Email đã tồn tại, vui lòng đăng nhập!"
+    "UserDaTonTaiVuiLongDangNhap": "Username/Email đã tồn tại, vui lòng đăng nhập!",
+    "Error_Message": "Error - Không truy cập được hệ thống",
+    "Error500_Message": "Error 500 - Không truy cập được hệ thống",
+    "Error401_Message": "Error 401 - Không truy cập được hệ thống",
+    "Error401_Message": "Error 401 - Không truy cập được hệ thống",
+    "EmailHoacPasswordKhongDung!": "Email/Password không đúng!"
 }

@@ -20,5 +20,9 @@
   "PasswordSpecialcaseError_Message": "Ensure password has one special case letter",
   "PasswordUppercaseError_Message": "Ensure password has two uppercase letters",
   "DangKyThanhCongVuiLongXacThucEmail!": "Register success, please active your email!",
-  "UserDaTonTaiVuiLongDangNhap": "Username/Email already exists, please login!"
+  "UserDaTonTaiVuiLongDangNhap": "Username/Email already exists, please login!",
+  "Error_Message": "Error - Cannot access system",
+  "Error500_Message": "Error 500 - Cannot access system",
+  "Error401_Message": "Error 401 - Cannot access system",
+  "EmailHoacPasswordKhongDung!": "Email/Password is incorrect!"
 }

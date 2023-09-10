@@ -377,12 +377,6 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     }
   }
 
-  _fieldFocusChange(
-      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
-    currentFocus.unfocus();
-    FocusScope.of(context).requestFocus(nextFocus);
-  }
-
   void _toggle() {
     setState(() {
       _isObsecure = !_isObsecure;

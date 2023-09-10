@@ -22,6 +22,7 @@ class ConstValue {
   static String recentMenuIDStr = "";
   static String api_BaseUrl = "https://inforestapi.site";
   static String api_RegisterUserURL = "/api/login/RegisterUser";
+  static String api_LoginCheckURL = "/api/login/LoginCheck";
 
 
   static List<DropdownMenuItem<Locale>> dropdownItems = [

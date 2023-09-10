@@ -27,6 +27,12 @@ class Token {
     hashinfo = json['hashinfo'];
   }
 
+  Token.fromJsonLogin(Map<String, dynamic> json) {
+    email = json['email'];
+    result = json['result'];
+    message = json['message'];
+  }
+
   Token.fromJsonSignUp(Map<String, dynamic> json) {
     email = json['email'];
     result = json['result'];
