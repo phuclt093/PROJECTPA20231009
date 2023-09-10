@@ -5,18 +5,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:baseapp/commons/const_value.dart';
+import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/models/string.dart';
 import 'package:baseapp/models/token.dart';
 import 'package:baseapp/utils/commonUtil.dart';
 import '../../data/img.dart';
-import '../../commons/themeValue.dart';
+import '../../commons/ThemeValue.dart';
 import '../../utils/httpUtil.dart';
 import '../../helpers/session.dart';
 import '../../helpers/slide_direction.dart';
 import '../common/progress_circle_center.dart';
 import '../home/home_screen.dart';
-import '../auth/login_new_screen.dart';
+import '../auth/LoginPage.dart';
 
 class Landing extends StatefulWidget {
   @override
@@ -81,28 +81,31 @@ class _LandingState extends State<Landing> with TickerProviderStateMixin {
     if (_idToken != "") {
       // await postCheckExistsTokenValidate(_idToken);
 
-      String ulr = "Login/RefeshValidateToken";
-      Map<String, String> parameters = {};
+      // String ulr = "Login/RefeshValidateToken";
+      // Map<String, String> parameters = {};
+      //
+      // String resultStr = await HttpHelper.fetchPost(
+      //     ulr, parameters, context, setFinishWorking);
+      //
+      // final json = jsonDecode(resultStr);
+      // var token = Token.fromJson(json);
+      // setState(() {
+      //   prefs.setString("id_token", token.idToken ?? "");
+      //   prefs.setString("username", token.username ?? "");
+      //   prefs.setString("userTypeID", token.userTypeID ?? "");
+      //   prefs.setString("email", token.email ?? "");
+      //   prefs.setString("fullName", token.fullName ?? "");
+      //   prefs.setString("userType", token.userType ?? "");
+      //
+      //   Navigator.pushReplacement(context,
+      //       CupertinoPageRoute(builder: (context) => HomeScreenRoute()));
+      // });
 
-      String resultStr = await HttpHelper.fetchPost(
-          ulr, parameters, context, setFinishWorking);
-
-      final json = jsonDecode(resultStr);
-      var token = Token.fromJson(json);
-      setState(() {
-        prefs.setString("id_token", token.idToken ?? "");
-        prefs.setString("username", token.username ?? "");
-        prefs.setString("userTypeID", token.userTypeID ?? "");
-        prefs.setString("email", token.email ?? "");
-        prefs.setString("fullName", token.fullName ?? "");
-        prefs.setString("userType", token.userType ?? "");
-
-        Navigator.pushReplacement(context,
-            CupertinoPageRoute(builder: (context) => HomeScreenRoute()));
-      });
+      Navigator.pushReplacement(context,
+          CupertinoPageRoute(builder: (context) => const LoginPage()));
     } else {
       Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => LoginNewScreenRoute()));
+          CupertinoPageRoute(builder: (context) => const LoginPage()));
     }
   }
 }

@@ -1,6 +1,22 @@
 {
   "lblChatYourWay": "Chat anywhere, anytime",
   "lblPassword": "Password",
+  "lblPasswordConfirm": "Confirm Password",
   "lblUsername": "Username",
-  "lblLogin": "Login"
+  "lblEmail": "Email",
+  "lblLogin": "Login",
+  "lblSignUp": "Sign Up",
+  "lblSuccess": "Success",
+  "lblError": "Error",
+  "lblPasswordMismatch": "Password mismatch!",
+  "lblEmailEmpty_Message": "Please input email!",
+  "lblPasswordEmpty_Message": "Please input password!",
+  "lblConfirmPasswordEmpty_Message": "Please input confirm password!",
+  "lblEmailFormatInvalid_Message": "Invalid Email Address!",
+  "lblLoginFailed": "Login Failed!",
+  "PasswordDigitError_Message": "Ensure password has two digits",
+  "PasswordLengthError_Message": "Ensure password length is set to 8 or more",
+  "PasswordLowercaseError_Message": "Ensure password has three lowercase letters",
+  "PasswordSpecialcaseError_Message": "Ensure password has one special case letter",
+  "PasswordUppercaseError_Message": "Ensure password has two uppercase letters"
 }

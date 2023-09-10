@@ -1,11 +1,13 @@
 import 'dart:convert';
-import 'package:baseapp/commons/const_value.dart';
+import 'package:baseapp/commons/ConstValue.dart';
+import 'package:baseapp/pages/auth/SignUpPage.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sizer/sizer.dart';
-import 'package:baseapp/commons/themeValue.dart';
+import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
 import 'package:baseapp/pages/auth/authentication.dart';
 import 'package:baseapp/pages/common/toast_message.dart';
@@ -16,16 +18,15 @@ import 'package:baseapp/utils/localizationUtil.dart';
 import '../../data/img.dart';
 import '../../helpers/session.dart';
 import '../../utils/httpUtil.dart';
-import '../common/progress_circle_center.dart';
 
-class LoginNewScreenRoute extends StatefulWidget {
-  LoginNewScreenRoute();
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  LoginNewScreenRouteState createState() => LoginNewScreenRouteState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
+class LoginPageState extends State<LoginPage>
     with TickerProviderStateMixin {
   bool finishLoading = false;
   late String _username, _password;
@@ -42,18 +43,12 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
   bool isTermsShow = false;
   String codeLangue = "vi";
 
-  final TextEditingController userName = TextEditingController();
-  final TextEditingController passWord = TextEditingController();
+  final TextEditingController userNameEdit = TextEditingController();
+  final TextEditingController passWordEdit = TextEditingController();
   FocusNode emailFocus = FocusNode();
   FocusNode passFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  double radius = 15;
-  double opacity = 0.7;
-  double spreadRadius = 7;
-  double blurRadius = 7;
-  double offsetX = 0;
-  double offsetY = 3;
 
   void showInSnackBar(String value) {}
 
@@ -66,9 +61,6 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
       });
     });
     super.initState();
-    setTimeout(() {
-      getCodeLangge();
-    }, 700);
   }
 
   @override
@@ -152,11 +144,11 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
                       },
                       colorFont: ThemeColor.colorFont_TextBox,
                       colorFontHint: ThemeColor.colorHint_TextBox,
-                      textController: userName,
+                      textController: userNameEdit,
                       onFieldSubmitFunc: (v) {
                         _fieldFocusChange(context, emailFocus, passFocus);
                       },
-                      hintLabel: LocalizationUtil.translate('lblUsername')!),
+                      hintLabel: LocalizationUtil.translate('lblEmail')!),
                 ),
                 Container(
                   margin: EdgeInsets.only(
@@ -177,7 +169,7 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
                     },
                     colorFont: ThemeColor.colorFont_TextBox,
                     colorFontHint: ThemeColor.colorHint_TextBox,
-                    textController: passWord,
+                    textController: passWordEdit,
                     onFieldSubmitFunc: (v) {},
                     hintLabel: LocalizationUtil.translate('lblPassword')!,
                     suffixIcon: Padding(
@@ -238,6 +230,27 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
                           // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
                         }
                       }),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                  child: InkWell(
+                      splashColor: Colors.transparent,
+                      child: Text(
+                        LocalizationUtil.translate('lblSignUp')!,
+                        //login_btn
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                            fontSize: 10.sp,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .colorHint_TextBox),
+                      ),
+                      onTap: () async {
+                        FocusScope.of(context).unfocus(); //dismiss keyboard
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => const SignUpPage()));
+                      }),
                 )
               ],
             ),
@@ -245,12 +258,6 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
         )
       ],
     );
-  }
-
-  getCodeLangge() async {
-    setState(() async {
-      codeLangue = await LocalizationUtil.GetLanguage();
-    });
   }
 
   @override
@@ -262,9 +269,9 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
     setFinishWorking(false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userName.text = prefs.getString("initUsername") ?? "";
-      _username = userName.text;
-      _password = passWord.text;
+      userNameEdit.text = prefs.getString("initUsername") ?? "";
+      _username = userNameEdit.text;
+      _password = passWordEdit.text;
 
       setFinishWorking(true);
     });
@@ -278,29 +285,29 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
     }
   }
 
-  void _handleRefreshTokenByBiometrics() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    //String tokenBiometrics = prefs.getString("token_biometrics") ?? "";
-    String isEnableLogin = prefs.getString("is_enable_login") ?? "no";
-    if (isEnableLogin == "yes") {
-      var check = await Authentication.authenticateWithBiometricsFunc();
-      if (check) {
-        String userNameBi = prefs.getString("username_bi") ?? "";
-        String passwordBi = prefs.getString("password_bi") ?? "";
-        var deviceID = await Authentication.getDeviceID();
-        submitLoginForm(userNameBi, passwordBi, deviceID, true);
-      } else {
-        ToastMessage.showColoredToast(
-            LocalizationUtil.translate("LOGIN_FAIL_LBL")!, "ERROR");
-        setFinishWorking(true);
-      }
-    } else {
-      ToastMessage.showColoredToast(
-          LocalizationUtil.translate('You_have_not_enabled_biometric_login')!,
-          "WARNING");
-      setFinishWorking(true);
-    }
-  }
+  // void _handleRefreshTokenByBiometrics() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   //String tokenBiometrics = prefs.getString("token_biometrics") ?? "";
+  //   String isEnableLogin = prefs.getString("is_enable_login") ?? "no";
+  //   if (isEnableLogin == "yes") {
+  //     var check = await Authentication.authenticateWithBiometricsFunc();
+  //     if (check) {
+  //       String userNameBi = prefs.getString("username_bi") ?? "";
+  //       String passwordBi = prefs.getString("password_bi") ?? "";
+  //       var deviceID = await Authentication.getDeviceID();
+  //       submitLoginForm(userNameBi, passwordBi, deviceID, true);
+  //     } else {
+  //       ToastMessage.showColoredToast(
+  //           LocalizationUtil.translate("LOGIN_FAIL_LBL")!, "ERROR");
+  //       setFinishWorking(true);
+  //     }
+  //   } else {
+  //     ToastMessage.showColoredToast(
+  //         LocalizationUtil.translate('You_have_not_enabled_biometric_login')!,
+  //         "WARNING");
+  //     setFinishWorking(true);
+  //   }
+  // }
 
   Future submitLoginForm(String usernameval, String passwordval,
       String deviceid, bool isLoginByBiometrics) async {
@@ -314,8 +321,13 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
         'deviceid': deviceid
       };
 
-      String resultStr = await HttpHelper.fetchPostWithoutToken(
-          ulr, parameters, context, setFinishWorking);
+      String resultStr = await HttpHelper.fetchPost(
+        context: context,
+        fnWorking: setFinishWorking,
+        parameters: parameters,
+        isAuth: false,
+        ulr: ulr
+      );
 
       try {
         final json = jsonDecode(resultStr);
@@ -359,7 +371,7 @@ class LoginNewScreenRouteState extends State<LoginNewScreenRoute>
         }
       } catch (e) {
         ToastMessage.showColoredToast(
-            LocalizationUtil.translate("LOGIN_FAIL_LBL")!, "ERROR");
+            LocalizationUtil.translate("lblLoginFailed")!, "ERROR");
         setFinishWorking(true);
       } finally {
         setFinishWorking(true);

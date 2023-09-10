@@ -34,13 +34,13 @@ extension themeValue on ColorScheme {
   static const Color colorBlueTDT = Color(0xff0064A7);
 
   static List<Color> lstWeekColor = [
-    Color(0xffFEC76F),
-    Color(0xffB3BE62),
-    Color(0xffBE95BE),
-    Color(0xff6DBFB8),
-    Color(0xffF5945C),
-    Color.fromARGB(255, 96, 146, 221),
-    Color(0xffFF6C55),
+    const Color(0xffFEC76F),
+    const Color(0xffB3BE62),
+    const Color(0xffBE95BE),
+    const Color(0xff6DBFB8),
+    const Color(0xffF5945C),
+    const Color.fromARGB(255, 96, 146, 221),
+    const Color(0xffFF6C55),
   ];
 
   //System
@@ -59,6 +59,16 @@ extension themeValue on ColorScheme {
   static const Color processCircleBarColor = Colors.pink;
 
   //Control
+  Color get colorAppBar_Background =>
+      this.brightness == Brightness.light ? const Color(0xff8EC41C)
+      : const Color(0xff8EC41C);
+  Color get colorAppBar_Font =>
+      this.brightness == Brightness.light ? Colors.black : Colors.black;
+  Color get colorAppBar_Foreground =>
+      this.brightness == Brightness.light ? Colors.white : Colors.white;
+  Color get colorAppBar_Icon =>
+      this.brightness == Brightness.light ? Colors.black : Colors.black;
+
   Color get colorMainBackground =>
       this.brightness == Brightness.light ? Colors.white : Colors.white;
 
@@ -74,8 +84,8 @@ extension themeValue on ColorScheme {
       ? Colors.transparent
       : Colors.transparent;
   Color get colorBackground_TextBox => this.brightness == Brightness.light
-      ? Color(0xffF5F5F5)
-      : Color(0xffF5F5F5);
+      ? const Color(0xffF5F5F5)
+      : const Color(0xffF5F5F5);
   Color get colorFont_TextBox =>
       this.brightness == Brightness.light ? Colors.black : Colors.black;
   Color get colorHint_TextBox => this.brightness == Brightness.light
@@ -87,8 +97,8 @@ extension themeValue on ColorScheme {
       : Colors.green.withOpacity(0.5);
 
   Color get colorBackground_Dropdown => this.brightness == Brightness.light
-      ? Color(0xffF5F5F5)
-      : Color(0xffF5F5F5);
+      ? const Color(0xffF5F5F5)
+      : const Color(0xffF5F5F5);
   Color get colorFont_Dropdown =>
       this.brightness == Brightness.light ? Colors.black : Colors.black;
   Color get colorIconEnabled_Dropdown =>
@@ -101,9 +111,9 @@ extension themeValue on ColorScheme {
 
 
   //Other
-  Color get colorTextChuY => Color(0xffe74c3c);
+  Color get colorTextChuY => const Color(0xffe74c3c);
 
-  Color get colorTextChuYAfter => Color(0xff0000ff);
+  Color get colorTextChuYAfter => const Color(0xff0000ff);
 
   Color get borderColor =>
       this.brightness == Brightness.dark ? bgColor : tempBorderColor;

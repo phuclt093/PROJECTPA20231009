@@ -20,8 +20,8 @@ class ConstValue {
   static String chucnangSearchText = "";
   static String defaultLanguageCode = "en";
   static String recentMenuIDStr = "";
-  static String BaseUrl = "https://restapi.tdtu.edu.vn/TDT/";
-  static String BaseUrlSTDPortal = "http://test12.tdtu.edu.vn/";
+  static String api_BaseUrl = "https://inforestapi.site/";
+  static String api_RegisterUserURL = "/api/login/RegisterUser";
 
 
   static List<DropdownMenuItem<Locale>> dropdownItems = [

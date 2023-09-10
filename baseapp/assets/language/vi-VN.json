@@ -1,6 +1,22 @@
 {
-    "lblChatYourWay": "Chat mọi lúc, mọi nơi!",
-    "lblPassword": "Password",
+    "lblChatYourWay": "Chat mọi lúc, nhắn mọi nơi!",
+    "lblPassword": "Mật khẩu",
+    "lblPasswordConfirm": "Mật khẩu xác thực",
     "lblUsername": "Username",
-    "lblLogin": "Đăng nhập"
+    "lblEmail": "Email",
+    "lblLogin": "Đăng nhập",
+    "lblSignUp": "Đăng ký",
+    "lblSuccess": "Thành công",
+    "lblError": "Có lỗi",
+    "lblPasswordMismatch": "Password không trùng khớp!",
+    "lblEmailEmpty_Message": "Vui lòng nhập địa chỉ email!",
+    "lblPasswordEmpty_Message": "Vui lòng nhập mật khẩu!",
+    "lblConfirmPasswordEmpty_Message": "Vui lòng nhập mật khẩu xác thực!",
+    "lblEmailFormatInvalid_Message": "Định dạng email không hợp lệ!",
+    "lblLoginFailed": "Đăng nhập thất bại!",
+    "PasswordDigitError_Message": "Mật khẩu phải có ít nhất 2 ký tự số",
+    "PasswordLengthError_Message": "Mật khẩu phải có độ dài tối thiểu là 8",
+    "PasswordLowercaseError_Message": "Mật khẩu phải có ít nhất 3 ký tự thường",
+    "PasswordSpecialcaseError_Message": "Mật khẩu phải có ít nhất 1 ký tự in đặc biệt",
+    "PasswordUppercaseError_Message": "Mật khẩu phải có ít nhất 2 ký tự in Hoa"
 }

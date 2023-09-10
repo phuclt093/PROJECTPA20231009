@@ -1,4 +1,4 @@
-import 'package:baseapp/commons/themeValue.dart';
+import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:flutter/material.dart';
 import 'package:baseapp/utils/localizationUtil.dart';
 
@@ -84,10 +84,3 @@ class CustomPasswordFieldWidget extends StatelessWidget {
   @override
   void dispose() {}
 }
-//
-// class CustomTextFieldWidgetState extends State<CustomTextFieldWidget>
-//     with TickerProviderStateMixin {
-//
-//
-//
-// }

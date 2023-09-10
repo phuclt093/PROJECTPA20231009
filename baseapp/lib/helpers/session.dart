@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:baseapp/commons/const_value.dart';
-import 'package:baseapp/commons/themeValue.dart';
+import 'package:baseapp/commons/ConstValue.dart';
+import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
