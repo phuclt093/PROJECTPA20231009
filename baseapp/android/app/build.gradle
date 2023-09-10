@@ -51,7 +51,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "tdtu.edu.vn.apptdtsinhvien"
+        applicationId "ltp.com.vn.wechat"
         //minSdkVersion flutter.minSdkVersion
         minSdkVersion 20
         targetSdkVersion flutter.targetSdkVersion

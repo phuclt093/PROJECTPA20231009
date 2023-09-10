@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tdtu.edu.vn.apptdtsinhvien">
+    package="ltp.com.vn.wechat">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
    <application
        android:usesCleartextTraffic="true"
-        android:label="apptdtsinhvien"
+        android:label="WeChat"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

@@ -1,4 +1,4 @@
-package tdtu.edu.vn.apptdtsinhvien
+package ltp.com.vn.wechat
 
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterFragmentActivity

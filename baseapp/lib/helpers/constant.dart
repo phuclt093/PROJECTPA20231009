@@ -1,7 +1,7 @@
 //all constant string used in app define here
 // ignore_for_file: non_constant_identifier_names
 
-final String appName = 'News App';
+final String appName = 'WeChat';
 final String packageName = 'com.news.wrteam';
 final String androidLink = 'https://play.google.com/store/apps/details?id=';
 
