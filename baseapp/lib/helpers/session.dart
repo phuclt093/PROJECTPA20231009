@@ -166,10 +166,6 @@ errorWidget(double height, double width) {
 //   return null;
 // }
 
-Icon setCoverageIcon(BuildContext context) {
-  return Icon(Icons.image,
-      color: Theme.of(context).colorScheme.fontColor.withOpacity(0.9));
-}
 
 // Text setCoverageText(BuildContext context) {
 //   return Text(
@@ -211,39 +207,8 @@ contentShimmer(BuildContext context) {
       ));
 }
 
-Widget tableCell(BuildContext context, String text,
-    {TextAlign? textAlign = TextAlign.start, Color? color = null}) {
-  // var textAlign = TextAlign.start;
-  // if (alignment = "1"){
 
-  // }
 
-  return Padding(
-    padding: const EdgeInsets.all(4.0),
-    child: Text(
-      text,
-      style: Theme.of(context).textTheme.subtitle2?.copyWith(
-          color: color ?? Theme.of(context).colorScheme.settingIconColor),
-      textAlign: textAlign ?? TextAlign.start,
-    ),
-  );
-}
-
-Widget getIcon(BuildContext context, String imagePath, String nameIcon) {
-  return RichText(
-    text: TextSpan(
-      children: [
-        WidgetSpan(
-          child: Image.asset(Img.get(imagePath), fit: BoxFit.cover),
-        ),
-        TextSpan(
-            text: nameIcon,
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                color: Theme.of(context).colorScheme.settingIconColor)),
-      ],
-    ),
-  );
-}
 
 Widget getIconFromByte(BuildContext context,String icon) {
   // List<int> codeUnits = icon.codeUnits;
@@ -251,48 +216,7 @@ Widget getIconFromByte(BuildContext context,String icon) {
   return   Image(image: Image.memory(bytes).image, fit: BoxFit.fill);
 }
 
-Widget _icon(BuildContext context, String imagePath, String nameIcon,
-    Function function) {
-  return Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: InkResponse(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              border: Border.all(color: Colors.red),
-              color: const Color(0xffffffff),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset(
-                Img.get(imagePath),
-                fit: BoxFit.cover,
-                width: 30,
-                height: 30,
-              ),
-            ),
-          ),
-          Container(
-            height: 2,
-          ),
-          Container(
-            child: Text(nameIcon,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                    fontSize: 8,
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context).colorScheme.settingIconColor)),
-            height: 20,
-          ),
-        ],
-      ),
-      onTap: () => {function()},
-    ),
-  );
-}
+
 
 Widget iconFake() {
   return Padding(
@@ -308,49 +232,9 @@ Widget iconFake() {
   );
 }
 
-Widget getListMenu(BuildContext context, List<MenuModel> lstMenu, int pageIndex,
-    int pageLenght, int numberRow) {
-  List<TableRow> lstTableRow = [];
 
-  var lstMenuInPage =
-      lstMenu.skip(pageIndex * pageLenght).take(pageLenght).toList();
 
-  for (var k = 0; k < numberRow; k++) {
-    List<Widget> lstWidget = [];
-    for (var i = 0; i < pageLenght; i++) {
-      if (lstMenuInPage.length > i) {
-        var item = lstMenuInPage[i];
-        if (i ~/ 4 == k) {
-          var iconitem =
-              _icon(context, item.imageName, item.nameMenu, item.function);
-          lstWidget.add(iconitem);
-        }
-      } else {
-        if (i ~/ 4 == k) {
-          var iconitem = iconFake();
-          lstWidget.add(iconitem);
-        }
-      }
-    }
-    lstTableRow.add(TableRow(children: lstWidget));
-  }
 
-  final attachmentWidget = Center(
-      // width: deviceWidth,
-      // height: 100,
-      //decoration: BoxDecoration(border: Border.all(color: Colors.white)),
-      child: Table(
-          border: const TableBorder(),
-          columnWidths: {
-            0: FlexColumnWidth(1),
-            1: FlexColumnWidth(1),
-            2: FlexColumnWidth(1),
-            3: FlexColumnWidth(1),
-          },
-          children: lstTableRow));
-
-  return attachmentWidget;
-}
 
 void setTimeout(callback, time) {
   Duration timeDelay = Duration(milliseconds: time);

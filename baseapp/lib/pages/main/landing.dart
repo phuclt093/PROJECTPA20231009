@@ -1,21 +1,9 @@
-import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:baseapp/commons/ConstValue.dart';
-import 'package:baseapp/models/string.dart';
-import 'package:baseapp/models/token.dart';
-import 'package:baseapp/utils/commonUtil.dart';
-import '../../data/img.dart';
-import '../../commons/ThemeValue.dart';
-import '../../utils/httpUtil.dart';
-import '../../helpers/session.dart';
-import '../../helpers/slide_direction.dart';
 import '../common/progress_circle_center.dart';
-import '../home/home_screen.dart';
 import '../auth/LoginPage.dart';
 
 class Landing extends StatefulWidget {

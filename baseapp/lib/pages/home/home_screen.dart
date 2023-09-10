@@ -233,7 +233,7 @@ class HomeScreenRouteState extends State<HomeScreenRoute>
         padding: EdgeInsetsDirectional.zero,
         child: Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.boxColor,
+              color: Colors.white,
               borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(0.0),
                   topRight: Radius.circular(0.0)),

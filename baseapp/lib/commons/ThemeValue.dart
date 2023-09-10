@@ -56,7 +56,7 @@ extension themeValue on ColorScheme {
   static const Color statusBarColorDark = Colors.transparent;
   static const Color splashColorDark = Colors.transparent;
   static const Color splashBackgroundColorDark = Colors.white;
-  static const Color processCircleBarColor = Colors.pink;
+  static const Color processCircleBarColor = Color(0xff8EC41C) ;
 
   //Control
   Color get colorAppBar_Background =>
@@ -105,67 +105,72 @@ extension themeValue on ColorScheme {
       this.brightness == Brightness.light ? Colors.black : Colors.black;
 
 
+  Color get colorIconProgress_Dialog =>
+      this.brightness == Brightness.light ? const Color(0xff8EC41C) : const Color(0xff8EC41C);
+  Color get colorMessage_Dialog =>
+      this.brightness == Brightness.light ? Colors.white : Colors.white;
+
 //Size
   static double TextBox_BorderRadius = 35.sp;
   static double Button_BorderRadius = 35.sp;
 
 
-  //Other
-  Color get colorTextChuY => const Color(0xffe74c3c);
-
-  Color get colorTextChuYAfter => const Color(0xff0000ff);
-
-  Color get borderColor =>
-      this.brightness == Brightness.dark ? bgColor : tempBorderColor;
-
-  Color get likeContainerColor => this.brightness == Brightness.dark
-      ? dartLikeContainerColor
-      : lightLikeContainerColor;
-
-  Color get lightColor =>
-      this.brightness == Brightness.dark ? secondaryColor : templightColor;
-
-  Color get boxColor => this.brightness == Brightness.dark
-      ? dartLikeContainerColor
-      : tempboxColor;
-
-  Color get fontColor =>
-      this.brightness == Brightness.dark ? bgColor : darkColor1;
-
-  Color get darkColor =>
-      this.brightness == Brightness.dark ? tempboxColor : tempdarkColor;
-
-  Color get skipColor =>
-      this.brightness == Brightness.dark ? bgColor : secondaryColor;
-
-  Color get tabColor =>
-      this.brightness == Brightness.dark ? primary : secondaryColor;
-
-  /* Color get langSel =>
-      this.brightness == Brightness.dark ? tempdarkColor : secondaryColor; */
-
-  Color get agoLabel =>
-      this.brightness == Brightness.dark ? darkBorderColor : tempBorderColor;
-
-  Color get coverage =>
-      this.brightness == Brightness.dark ? darkBorderColor : bgColor;
-
-  Color get settingIconColor => this.brightness == Brightness.dark
-      ? bgColor
-      : settingsIconClrL; //settingsIconClrD
-
-  Color get controlBGColor =>
-      this.brightness == Brightness.dark ? darkColor1 : textFormFieldColor;
-
-  Color get controlSettings =>
-      this.brightness == Brightness.dark ? darkColor1 : tempboxColor;
-
-  Color get colorBorder =>
-      this.brightness == Brightness.dark ? darkModeColor : colorGrey;
-
-  Color get colorBackground_AppBar =>
-      this.brightness == Brightness.dark ? colorBlueTDT : colorBlueTDT;
-
-  Color get color_SearchBoxHint =>
-      this.brightness == Brightness.dark ? Colors.white60 : colorGrey1;
+  // //Other
+  // Color get colorTextChuY => const Color(0xffe74c3c);
+  //
+  // Color get colorTextChuYAfter => const Color(0xff0000ff);
+  //
+  // Color get borderColor =>
+  //     this.brightness == Brightness.dark ? bgColor : tempBorderColor;
+  //
+  // Color get likeContainerColor => this.brightness == Brightness.dark
+  //     ? dartLikeContainerColor
+  //     : lightLikeContainerColor;
+  //
+  // Color get lightColor =>
+  //     this.brightness == Brightness.dark ? secondaryColor : templightColor;
+  //
+  // Color get boxColor => this.brightness == Brightness.dark
+  //     ? dartLikeContainerColor
+  //     : tempboxColor;
+  //
+  // Color get fontColor =>
+  //     this.brightness == Brightness.dark ? bgColor : darkColor1;
+  //
+  // Color get darkColor =>
+  //     this.brightness == Brightness.dark ? tempboxColor : tempdarkColor;
+  //
+  // Color get skipColor =>
+  //     this.brightness == Brightness.dark ? bgColor : secondaryColor;
+  //
+  // Color get tabColor =>
+  //     this.brightness == Brightness.dark ? primary : secondaryColor;
+  //
+  // /* Color get langSel =>
+  //     this.brightness == Brightness.dark ? tempdarkColor : secondaryColor; */
+  //
+  // Color get agoLabel =>
+  //     this.brightness == Brightness.dark ? darkBorderColor : tempBorderColor;
+  //
+  // Color get coverage =>
+  //     this.brightness == Brightness.dark ? darkBorderColor : bgColor;
+  //
+  // Color get settingIconColor => this.brightness == Brightness.dark
+  //     ? bgColor
+  //     : settingsIconClrL; //settingsIconClrD
+  //
+  // Color get controlBGColor =>
+  //     this.brightness == Brightness.dark ? darkColor1 : textFormFieldColor;
+  //
+  // Color get controlSettings =>
+  //     this.brightness == Brightness.dark ? darkColor1 : tempboxColor;
+  //
+  // Color get colorBorder =>
+  //     this.brightness == Brightness.dark ? darkModeColor : colorGrey;
+  //
+  // Color get colorBackground_AppBar =>
+  //     this.brightness == Brightness.dark ? colorBlueTDT : colorBlueTDT;
+  //
+  // Color get color_SearchBoxHint =>
+  //     this.brightness == Brightness.dark ? Colors.white60 : colorGrey1;
 }

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/commons/MessageType.dart';
 import 'package:baseapp/pages/auth/SignUpPage.dart';
+import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
@@ -221,7 +222,7 @@ class LoginPageState extends State<LoginPage>
                           setState(() {
                             finishLoading = true;
                           });
-                          fnLogin();
+                          fnLogin(context);
                         } else {
                           // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
                         }
@@ -305,7 +306,7 @@ class LoginPageState extends State<LoginPage>
   //   }
   // }
 
-  Future fnLogin() async {
+  Future fnLogin(BuildContext context) async {
     if (emailEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('lblEmailEmpty_Message')!, MessageType.ERROR);
@@ -332,6 +333,12 @@ class LoginPageState extends State<LoginPage>
         'email': emailEdit.text.toString(),
         'pass': passwordEdit.text.toString(),
       };
+
+      var ThemeColor = Theme.of(context).colorScheme;
+      var result = await DialogUtil.fncShowLoadingScreen(context, ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
+      if (!result) {
+        return false;
+      }
 
       String resultStr = await HttpHelper.fetchPost(
           context: context,
@@ -365,6 +372,9 @@ class LoginPageState extends State<LoginPage>
         //     LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
       } finally {
+        if (mounted) {
+          await DialogUtil.hideLoadingScreen(context);
+        }
         setFinishWorking(true);
       }
     } else {

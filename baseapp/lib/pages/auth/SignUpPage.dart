@@ -3,6 +3,7 @@ import 'package:baseapp/commons/ErrorCode.dart';
 import 'package:baseapp/commons/MessageType.dart';
 import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
+import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
@@ -124,7 +125,8 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                       colorFontHint: ThemeColor.colorHint_TextBox,
                       textController: userNameEdit,
                       onFieldSubmitFunc: (v) {
-                        CommonUtil.ChangeFocus(context, emailFocus, passwordFocus);
+                        CommonUtil.ChangeFocus(
+                            context, emailFocus, passwordFocus);
                       },
                       hintLabel: LocalizationUtil.translate('lblEmail')!),
                 ),
@@ -147,7 +149,8 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     colorFontHint: ThemeColor.colorHint_TextBox,
                     textController: passWordEdit,
                     onFieldSubmitFunc: (v) {
-                      CommonUtil.ChangeFocus(context, passwordFocus, passwordConfirmFocus);
+                      CommonUtil.ChangeFocus(
+                          context, passwordFocus, passwordConfirmFocus);
                     },
                     hintLabel: LocalizationUtil.translate('lblPassword')!,
                     suffixIcon: Padding(
@@ -236,7 +239,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                           setState(() {
                             finishLoading = true;
                           });
-                          fnSignUp();
+                          fnSignUp(context);
                           //signInWithEmailPassword(email!.trim(), pass!);
                         } else {
                           // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
@@ -264,67 +267,76 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     }
   }
 
-  Future fnSignUp() async {
+  Future fnSignUp(BuildContext context) async {
     if (userNameEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblEmailEmpty_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblEmailEmpty_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (CommonUtil.CheckEmailFormat(userNameEdit.text) == false) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (passWordEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblPasswordEmpty_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblPasswordEmpty_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (passWordConfirmEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblConfirmPasswordEmpty_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblConfirmPasswordEmpty_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (passWordConfirmEdit.text.toString() != passWordEdit.text.toString()) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblPasswordMismatch')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblPasswordMismatch')!,
+          MessageType.ERROR);
       return;
     }
 
     //Check password strength
-    var resultCheck =
-    CommonUtil.CheckPasswordFormat(passWordEdit.text);
+    var resultCheck = CommonUtil.CheckPasswordFormat(passWordEdit.text);
     if (resultCheck == ErrorCode.ERROR_CODE_TWO_UPPERCASE_LETTER) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('PasswordUppercaseError_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('PasswordUppercaseError_Message')!,
+          MessageType.ERROR);
       return false;
     }
 
     if (resultCheck == ErrorCode.ERROR_CODE_ONE_SPECIAL_LETTER) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('PasswordSpecialcaseError_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('PasswordSpecialcaseError_Message')!,
+          MessageType.ERROR);
       return false;
     }
 
     if (resultCheck == ErrorCode.ERROR_CODE_TWO_DIGIT) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('PasswordDigitError_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('PasswordDigitError_Message')!,
+          MessageType.ERROR);
       return false;
     }
 
     if (resultCheck == ErrorCode.ERROR_CODE_THREE_LOWERCASE_LETTER) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('PasswordLowercaseError_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('PasswordLowercaseError_Message')!,
+          MessageType.ERROR);
       return false;
     }
 
     if (resultCheck == ErrorCode.ERROR_CODE_SMALLER_THAN_8) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('PasswordLengthError_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('PasswordLengthError_Message')!,
+          MessageType.ERROR);
       return false;
     }
 
@@ -338,6 +350,13 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
         'retypepass': passWordConfirmEdit.text.toString()
       };
 
+      var ThemeColor = Theme.of(context).colorScheme;
+      var result = await DialogUtil.fncShowLoadingScreen(context,
+          ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
+      if (!result) {
+        return false;
+      }
+
       String resultStr = await HttpHelper.fetchPost(
           context: context,
           fnWorking: setFinishWorking,
@@ -348,7 +367,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       try {
         final json = jsonDecode(resultStr);
         var token = Token.fromJsonSignUp(json);
-        if(token != null){
+        if (token != null) {
           if (token.result == "OK") {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
@@ -359,8 +378,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
-        }
-       else {
+        } else {
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           setFinishWorking(true);
@@ -370,11 +388,12 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
       } finally {
+        if (mounted) {
+          await DialogUtil.hideLoadingScreen(context);
+        }
         setFinishWorking(true);
       }
-    } else {
-
-    }
+    } else {}
   }
 
   void _toggle() {

@@ -145,7 +145,7 @@ class AuthenticateBiometricsRouteState
                       Icon(
                         Icons.fingerprint_sharp,
                         size: 20,
-                        color: Theme.of(context).colorScheme.settingIconColor,
+                        color: Colors.white,
                       ),
                       Container(width: 10),
                       Text(LocalizationUtil.translate('Kich_Hoat_Dang_Nhap')!,
@@ -155,9 +155,7 @@ class AuthenticateBiometricsRouteState
                               .subtitle1
                               ?.copyWith(
                                   fontSize: 14,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .settingIconColor)),
+                                  color: Colors.white)),
                       const Spacer(),
                       SizedBox(
                           // height: 45,
