@@ -94,7 +94,7 @@ class LoginPageState extends State<LoginPage>
                       colorIconEnabled: ThemeColor.colorIconEnabled_Dropdown,
                       colorFont: ThemeColor.colorFont_Dropdown,
                       coloBackground: ThemeColor.colorBackground_Dropdown,
-                      fontSize: 14.sp,
+                      fontSize: 10.sp,
                       dropdownItems: ConstValue.dropdownItems,
                       selectedLang: context.locale,
                       onChangeFunc: (Object? newValue) {

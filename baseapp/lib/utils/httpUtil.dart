@@ -1,14 +1,10 @@
-import 'dart:convert';
 
-import 'package:baseapp/models/token.dart';
-import 'package:baseapp/pages/auth/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:baseapp/utils/commonUtil.dart';
 import '../commons/ConstValue.dart';
 import 'package:http/http.dart' as http;
 
-import '../helpers/Session.dart';
 
 class HttpHelper {
   static Future<String> fetchPostWithoutLogin(String ulr, Map<String, String> parameters,

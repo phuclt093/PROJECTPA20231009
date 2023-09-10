@@ -328,46 +328,53 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       return false;
     }
 
-    // _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
-    // if (_isNetworkAvail) {
-    //   String ulr = ConstValue.api_RegisterUserURL;
-    //   setFinishWorking(false);
-    //   Map<String, String> parameters = {
-    //     'email': userName.value.toString(),
-    //     'pass': passWord.value.toString(),
-    //     'retypepass': passWordConfirm.value.toString()
-    //   };
-    //
-    //   String resultStr = await HttpHelper.fetchPost(
-    //       context: context,
-    //       fnWorking: setFinishWorking,
-    //       parameters: parameters,
-    //       isAuth: false,
-    //       ulr: ulr);
-    //
-    //   try {
-    //     final json = jsonDecode(resultStr);
-    //     var token = Token.fromJson(json);
-    //     if (token.idToken != null) {
-    //       ToastMessage.showColoredToast(
-    //           LocalizationUtil.translate('lblSuccess')!, MessageType.OK);
-    //       Navigator.pushNamedAndRemoveUntil(
-    //           context, '/login', ModalRoute.withName('/login'));
-    //     } else {
-    //       ToastMessage.showColoredToast(
-    //           LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-    //       setFinishWorking(true);
-    //     }
-    //   } catch (e) {
-    //     ToastMessage.showColoredToast(
-    //         LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-    //     setFinishWorking(true);
-    //   } finally {
-    //     setFinishWorking(true);
-    //   }
-    // } else {
-    //
-    // }
+    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+    if (_isNetworkAvail) {
+      String ulr = ConstValue.api_RegisterUserURL;
+      setFinishWorking(false);
+      Map<String, String> parameters = {
+        'email': userNameEdit.text.toString(),
+        'pass': passWordEdit.text.toString(),
+        'retypepass': passWordConfirmEdit.text.toString()
+      };
+
+      String resultStr = await HttpHelper.fetchPost(
+          context: context,
+          fnWorking: setFinishWorking,
+          parameters: parameters,
+          isAuth: false,
+          ulr: ulr);
+
+      try {
+        final json = jsonDecode(resultStr);
+        var token = Token.fromJsonSignUp(json);
+        if(token != null){
+          if (token.result == "OK") {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!), MessageType.OK);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/login', ModalRoute.withName('/login'));
+          } else {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
+            setFinishWorking(true);
+          }
+        }
+       else {
+          ToastMessage.showColoredToast(
+              LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+          setFinishWorking(true);
+        }
+      } catch (e) {
+        ToastMessage.showColoredToast(
+            LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+        setFinishWorking(true);
+      } finally {
+        setFinishWorking(true);
+      }
+    } else {
+
+    }
   }
 
   _fieldFocusChange(

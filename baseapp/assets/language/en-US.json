@@ -18,5 +18,7 @@
   "PasswordLengthError_Message": "Ensure password length is set to 8 or more",
   "PasswordLowercaseError_Message": "Ensure password has three lowercase letters",
   "PasswordSpecialcaseError_Message": "Ensure password has one special case letter",
-  "PasswordUppercaseError_Message": "Ensure password has two uppercase letters"
+  "PasswordUppercaseError_Message": "Ensure password has two uppercase letters",
+  "DangKyThanhCongVuiLongXacThucEmail!": "Register success, please active your email!",
+  "UserDaTonTaiVuiLongDangNhap": "Username/Email already exists, please login!"
 }

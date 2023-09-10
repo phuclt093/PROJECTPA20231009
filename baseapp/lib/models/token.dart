@@ -6,6 +6,8 @@ class Token {
   String? fullName;
   String? userType;
   String? hashinfo;
+  String? result;
+  String? message;
 
   Token(
       {this.idToken,
@@ -27,6 +29,8 @@ class Token {
 
   Token.fromJsonSignUp(Map<String, dynamic> json) {
     email = json['email'];
+    result = json['result'];
+    message = json['message'];
   }
 
   Map<String, dynamic> toJson() {

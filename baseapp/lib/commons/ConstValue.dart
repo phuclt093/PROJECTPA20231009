@@ -20,7 +20,7 @@ class ConstValue {
   static String chucnangSearchText = "";
   static String defaultLanguageCode = "en";
   static String recentMenuIDStr = "";
-  static String api_BaseUrl = "https://inforestapi.site/";
+  static String api_BaseUrl = "https://inforestapi.site";
   static String api_RegisterUserURL = "/api/login/RegisterUser";
 
 
