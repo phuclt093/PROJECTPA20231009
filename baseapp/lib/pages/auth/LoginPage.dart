@@ -364,8 +364,9 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
-
+            setState(() {
+              Navigator.of(context).pop();
+            });
             // setState(() {
             //   if (mounted) {
             //     Navigator.pushReplacement(context,

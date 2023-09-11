@@ -1,5 +1,6 @@
 {
-  "XacThucThanhCong!": "Confirm successful!",
+  "MaXacThucKhongDungVuiLongThucHienLai": "Code confirm is incorrect, please try again!",
+  "XacThucEmailThanhCong!": "Confirm email successful!",
   "DangNhapThanhCong!": "Login successful!",
   "MotMaXacThucDaDuocGuiToiEmailVuiLongXacThuc": "We have sent one code to your email, please confirm it!",
   "Resend": "Resend",
