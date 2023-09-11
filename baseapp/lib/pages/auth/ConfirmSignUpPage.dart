@@ -87,8 +87,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
               colorFont: ThemeColor.colorAppBar_Font,
               colorIcon: ThemeColor.colorAppBar_Icon,
               onBack: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
+                Navigator.pop(context);
               }),
           body: SingleChildScrollView(
               child: Align(
