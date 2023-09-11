@@ -363,9 +363,10 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            if (!mounted) return false;
             setState(() {
-              Navigator.of(context).pop();
+              if (mounted) {
+                Navigator.of(context).pop();
+              }
             });
             // setState(() {
             //   if (mounted) {
