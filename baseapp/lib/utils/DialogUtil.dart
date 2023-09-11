@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class DialogUtil {
-  static Future<bool> fncShowLoadingScreen(BuildContext context, Color colorIconProgress, Color colorMessage) async {
+  static Future<bool> fncShowLoadingScreen(BuildContext context, Color colorIconProgress, Color colorMessage, BuildContext dialogcontext) async {
     // Duration duration = const Duration(seconds: 2);
     var message = LocalizationUtil.translate("Loading...");
 
@@ -12,6 +12,7 @@ class DialogUtil {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext context) {
+          dialogcontext = context;
           return AbsorbPointer(
             child: AlertDialog(
               backgroundColor: Colors.transparent,

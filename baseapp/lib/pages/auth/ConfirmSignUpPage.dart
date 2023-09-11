@@ -37,6 +37,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
 
   late Timer timerCountDown;
   Duration duration = Duration(minutes: 2);
+  BuildContext? dialogcontext;
 
   void startTimer() {
     const oneSec = const Duration(seconds: 1);
@@ -66,6 +67,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
 
   @override
   Widget build(BuildContext context) {
+    dialogcontext = context;
     var ThemeColor = Theme.of(context).colorScheme;
     return Stack(
       children: [
@@ -243,13 +245,15 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
         'email': widget.email,
       };
 
+
       try {
         //Show loading
         var ThemeColor = Theme.of(context).colorScheme;
         var result = await DialogUtil.fncShowLoadingScreen(
             context,
             ThemeColor.colorIconProgress_Dialog,
-            ThemeColor.colorMessage_Dialog);
+            ThemeColor.colorMessage_Dialog,
+            dialogcontext!);
         if (!result) {
           return false;
         }
@@ -269,7 +273,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
             if (!mounted) return false;
-            Navigator.of(context).pop();
+            Navigator.of(dialogcontext!).pop();
 
             duration = Duration(minutes: 2);
             startTimer();
@@ -277,21 +281,21 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
             return;
           } else {
             if (!mounted) return false;
-            Navigator.of(context).pop();
+            Navigator.of(dialogcontext!).pop();
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
         } else {
           if (!mounted) return false;
-          Navigator.of(context).pop();
+          Navigator.of(dialogcontext!).pop();
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           setFinishWorking(true);
         }
       } catch (e) {
         if (!mounted) return false;
-        Navigator.of(context).pop();
+        Navigator.of(dialogcontext!).pop();
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
@@ -318,13 +322,15 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
         'randomnumber': codeEdit.text.toString(),
       };
 
+
       try {
         //Show loading
         var ThemeColor = Theme.of(context).colorScheme;
         var result = await DialogUtil.fncShowLoadingScreen(
             context,
             ThemeColor.colorIconProgress_Dialog,
-            ThemeColor.colorMessage_Dialog);
+            ThemeColor.colorMessage_Dialog,
+            dialogcontext!);
         if (!result) {
           return false;
         }
@@ -348,7 +354,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
             // }
 
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
 
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.OK);
@@ -365,21 +371,21 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
             setFinishWorking(true);
           }
         } else {
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           if (!mounted) return false;
-          await DialogUtil.hideLoadingScreen(context);
+          await DialogUtil.hideLoadingScreen(dialogcontext!);
           setFinishWorking(true);
         }
       } catch (e) {
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         if (!mounted) return false;
-        await DialogUtil.hideLoadingScreen(context);
+        await DialogUtil.hideLoadingScreen(dialogcontext!);
         setFinishWorking(true);
       } finally {
         setFinishWorking(true);

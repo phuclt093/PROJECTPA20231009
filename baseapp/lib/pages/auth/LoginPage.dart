@@ -11,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:sizer/sizer.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
-import 'package:baseapp/pages/auth/Authentication.dart';
 import 'package:baseapp/pages/common/Toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,6 +47,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   FocusNode emailFocus = FocusNode();
   FocusNode passFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  BuildContext? dialogcontext;
 
   void showInSnackBar(String value) {}
 
@@ -59,6 +59,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    dialogcontext = context;
     var ThemeColor = Theme.of(context).colorScheme;
     return Stack(
       children: [
@@ -331,20 +332,14 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         'pass': passwordEdit.text.toString(),
       };
 
-      var ThemeColor = Theme.of(context).colorScheme;
-      var result = await DialogUtil.fncShowLoadingScreen(context,
-          ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
-      if (!result) {
-        return false;
-      }
-
       try {
         //Show loading
         var ThemeColor = Theme.of(context).colorScheme;
         var result = await DialogUtil.fncShowLoadingScreen(
             context,
             ThemeColor.colorIconProgress_Dialog,
-            ThemeColor.colorMessage_Dialog);
+            ThemeColor.colorMessage_Dialog,
+            dialogcontext!);
         if (!result) {
           return false;
         }
@@ -365,7 +360,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
             setState(() {
               if (mounted) {
-                Navigator.of(context).pop();
+                Navigator.of(dialogcontext!).pop();
               }
             });
             // setState(() {
@@ -377,19 +372,19 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             return;
           } else {
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
         } else {
           if (!mounted) return false;
-          await DialogUtil.hideLoadingScreen(context);
+          await DialogUtil.hideLoadingScreen(dialogcontext!);
           setFinishWorking(true);
         }
       } catch (e) {
         if (!mounted) return false;
-        await DialogUtil.hideLoadingScreen(context);
+        await DialogUtil.hideLoadingScreen(dialogcontext!);
         setFinishWorking(true);
       } finally {
         setFinishWorking(true);

@@ -37,6 +37,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   FocusNode passwordFocus = FocusNode();
   FocusNode passwordConfirmFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  BuildContext? dialogcontext;
 
   void showInSnackBar(String value) {}
 
@@ -54,6 +55,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    dialogcontext = context;
     var ThemeColor = Theme.of(context).colorScheme;
     return Stack(
       children: [
@@ -457,7 +459,8 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
         var result = await DialogUtil.fncShowLoadingScreen(
             context,
             ThemeColor.colorIconProgress_Dialog,
-            ThemeColor.colorMessage_Dialog);
+            ThemeColor.colorMessage_Dialog,
+            dialogcontext!);
         if (!result) {
           return false;
         }
@@ -481,7 +484,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             // }
 
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
 
             setState(() {
               if (mounted) {
@@ -498,21 +501,21 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(context);
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
             setFinishWorking(true);
           }
         } else {
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           if (!mounted) return false;
-          await DialogUtil.hideLoadingScreen(context);
+          await DialogUtil.hideLoadingScreen(dialogcontext!);
           setFinishWorking(true);
         }
       } catch (e) {
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         if (!mounted) return false;
-        await DialogUtil.hideLoadingScreen(context);
+        await DialogUtil.hideLoadingScreen(dialogcontext!);
         setFinishWorking(true);
       } finally {
         setFinishWorking(true);
