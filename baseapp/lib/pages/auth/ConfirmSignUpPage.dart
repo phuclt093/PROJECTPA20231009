@@ -273,7 +273,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
             if (!mounted) return false;
-            Navigator.of(dialogcontext!).pop();
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
 
             duration = Duration(minutes: 2);
             startTimer();
@@ -281,21 +281,21 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
             return;
           } else {
             if (!mounted) return false;
-            Navigator.of(dialogcontext!).pop();
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
         } else {
           if (!mounted) return false;
-          Navigator.of(dialogcontext!).pop();
+          await DialogUtil.hideLoadingScreen(dialogcontext!);
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           setFinishWorking(true);
         }
       } catch (e) {
         if (!mounted) return false;
-        Navigator.of(dialogcontext!).pop();
+        await DialogUtil.hideLoadingScreen(dialogcontext!);
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
