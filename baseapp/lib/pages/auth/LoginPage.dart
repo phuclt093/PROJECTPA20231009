@@ -363,31 +363,33 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            if (mounted) {
-              await DialogUtil.hideLoadingScreen(context);
-            }
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
 
-            setState(() {
-              if (mounted) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
-              }
-            });
+            // setState(() {
+            //   if (mounted) {
+            //     Navigator.pushReplacement(context,
+            //         MaterialPageRoute(builder: (context) => const LoginPage()));
+            //   }
+            // });
             return;
           } else {
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
         } else {
+          if (!mounted) return false;
+          await DialogUtil.hideLoadingScreen(context);
           setFinishWorking(true);
         }
       } catch (e) {
+        if (!mounted) return false;
+        await DialogUtil.hideLoadingScreen(context);
         setFinishWorking(true);
       } finally {
-        if (mounted) {
-          await DialogUtil.hideLoadingScreen(context);
-        }
         setFinishWorking(true);
       }
     } else {}

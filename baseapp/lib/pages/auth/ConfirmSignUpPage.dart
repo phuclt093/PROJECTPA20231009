@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:baseapp/enums/ErrorCode.dart';
 import 'package:baseapp/enums/MessageType.dart';
@@ -25,13 +26,35 @@ class ConfirmSignUpPage extends StatefulWidget {
   ConfirmSignUpPageState createState() => ConfirmSignUpPageState();
 }
 
-class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProviderStateMixin {
+class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
+    with TickerProviderStateMixin {
   bool finishLoading = false;
   bool _isNetworkAvail = true;
   final TextEditingController codeEdit = TextEditingController();
   FocusNode codeFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String? codeConfirm = "";
+
+  late Timer timerCountDown;
+  Duration duration = Duration(minutes: 2);
+
+  void startTimer() {
+    const oneSec = const Duration(seconds: 1);
+    timerCountDown = new Timer.periodic(
+      oneSec,
+          (Timer timer) {
+        if (duration.inSeconds <= 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            duration = duration - oneSec;
+          });
+        }
+      },
+    );
+  }
 
   void showInSnackBar(String value) {}
 
@@ -113,11 +136,10 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProvide
                       colorFont: ThemeColor.colorFont_TextBox,
                       colorFontHint: ThemeColor.colorHint_TextBox,
                       textController: codeEdit,
-                      onFieldSubmitFunc: (v) {
-                      },
+                      onFieldSubmitFunc: (v) {},
                       hintLabel: LocalizationUtil.translate('CodeConfirm')!),
                 ),
-                Container(
+                duration.inSeconds <= 0 ? Container(
                   margin: EdgeInsets.only(
                       left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
                   child: InkWell(
@@ -135,6 +157,18 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProvide
                       onTap: () async {
                         fnGetCodeConfirmInEmail(context);
                       }),
+                ) :  Container(
+                  margin: EdgeInsets.only(
+                      left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                  child: Text(
+                    CommonUtil.DislayMMSS(duration),
+                    //login_btn
+                    style: TextStyle(
+                        fontSize: 10.sp,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .colorHint_TextBox),
+                  ),
                 ),
                 Container(
                   margin: EdgeInsets.only(
@@ -167,7 +201,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProvide
                           setState(() {
                             finishLoading = true;
                           });
-                          // fnConfirmSignUp(context);
+                          fnConfirmSignUp(context);
                         } else {
                           // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
                         }
@@ -204,7 +238,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProvide
 
     _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     if (_isNetworkAvail) {
-      String ulr = ConstValue.api_RegisterUserURL;
+      String ulr = ConstValue.api_SendEmailVerifyURL;
       setFinishWorking(false);
       Map<String, String> parameters = {
         'email': widget.email,
@@ -235,109 +269,122 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage> with TickerProvide
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            if (mounted) {
-              await DialogUtil.hideLoadingScreen(context);
-            }
+            if (!mounted) return false;
+            Navigator.of(context).pop();
+
+            duration = Duration(minutes: 2);
+            startTimer();
+
             return;
           } else {
+            if (!mounted) return false;
+            Navigator.of(context).pop();
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
         } else {
+          if (!mounted) return false;
+          Navigator.of(context).pop();
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
           setFinishWorking(true);
         }
       } catch (e) {
+        if (!mounted) return false;
+        Navigator.of(context).pop();
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
       } finally {
-        if (mounted) {
-          await DialogUtil.hideLoadingScreen(context);
-        }
         setFinishWorking(true);
       }
     } else {}
   }
 
+  Future fnConfirmSignUp(BuildContext context) async {
+    if (codeEdit.text.isEmpty) {
+      ToastMessage.showColoredToast(
+          LocalizationUtil.translate('lblEmailEmpty_Message')!,
+          MessageType.ERROR);
+      return;
+    }
 
-  // Future fnConfirmSignUp(BuildContext context) async {
-  //   if (codeEdit.text.isEmpty) {
-  //     ToastMessage.showColoredToast(
-  //         LocalizationUtil.translate('lblEmailEmpty_Message')!,
-  //         MessageType.ERROR);
-  //     return;
-  //   }
-  //
-  //   _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
-  //   if (_isNetworkAvail) {
-  //     String ulr = ConstValue.api_RegisterUserURL;
-  //     setFinishWorking(false);
-  //     Map<String, String> parameters = {
-  //       'email': codeEdit.text.toString(),
-  //       'pass': passWordEdit.text.toString(),
-  //       'retypepass': passWordConfirmEdit.text.toString()
-  //     };
-  //
-  //     try {
-  //       //Show loading
-  //       var ThemeColor = Theme.of(context).colorScheme;
-  //       var result = await DialogUtil.fncShowLoadingScreen(
-  //           context,
-  //           ThemeColor.colorIconProgress_Dialog,
-  //           ThemeColor.colorMessage_Dialog);
-  //       if (!result) {
-  //         return false;
-  //       }
-  //
-  //       String resultStr = await HttpHelper.fetchPost(
-  //           context: context,
-  //           fnWorking: setFinishWorking,
-  //           parameters: parameters,
-  //           isAuth: false,
-  //           ulr: ulr);
-  //
-  //       final json = jsonDecode(resultStr);
-  //       var token = Token.fromJsonSignUp(json);
-  //       if (token != null) {
-  //         if (token.result == "OK") {
-  //           ToastMessage.showColoredToast(
-  //               LocalizationUtil.translate(token.message!), MessageType.OK);
-  //
-  //           if (mounted) {
-  //             await DialogUtil.hideLoadingScreen(context);
-  //           }
-  //
-  //           setState(() {
-  //             if (mounted) {
-  //               Navigator.pushReplacement(context,
-  //                   MaterialPageRoute(builder: (context) => const LoginPage()));
-  //             }
-  //           });
-  //
-  //           return;
-  //         } else {
-  //           ToastMessage.showColoredToast(
-  //               LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
-  //           setFinishWorking(true);
-  //         }
-  //       } else {
-  //         ToastMessage.showColoredToast(
-  //             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-  //         setFinishWorking(true);
-  //       }
-  //     } catch (e) {
-  //       ToastMessage.showColoredToast(
-  //           LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-  //       setFinishWorking(true);
-  //     } finally {
-  //       if (mounted) {
-  //         await DialogUtil.hideLoadingScreen(context);
-  //       }
-  //       setFinishWorking(true);
-  //     }
-  //   } else {}
-  // }
+    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+    if (_isNetworkAvail) {
+      String ulr = ConstValue.api_CheckVerifyEmailURL;
+      setFinishWorking(false);
+      Map<String, String> parameters = {
+        'email': widget.email,
+        'randomnumber': codeEdit.text.toString(),
+      };
+
+      try {
+        //Show loading
+        var ThemeColor = Theme.of(context).colorScheme;
+        var result = await DialogUtil.fncShowLoadingScreen(
+            context,
+            ThemeColor.colorIconProgress_Dialog,
+            ThemeColor.colorMessage_Dialog);
+        if (!result) {
+          return false;
+        }
+
+        String resultStr = await HttpHelper.fetchPost(
+            context: context,
+            fnWorking: setFinishWorking,
+            parameters: parameters,
+            isAuth: false,
+            ulr: ulr);
+
+        final json = jsonDecode(resultStr);
+        var token = Token.fromJsonSignUp(json);
+        if (token != null) {
+          if (token.result == "OK") {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!), MessageType.OK);
+
+            // if (mounted) {
+            //   await DialogUtil.hideLoadingScreen(context);
+            // }
+
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
+
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!)!, MessageType.OK);
+
+            setState(() {
+              if (mounted) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+              }
+            });
+
+            return;
+          } else {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
+            setFinishWorking(true);
+          }
+        } else {
+          ToastMessage.showColoredToast(
+              LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+          if (!mounted) return false;
+          await DialogUtil.hideLoadingScreen(context);
+          setFinishWorking(true);
+        }
+      } catch (e) {
+        ToastMessage.showColoredToast(
+            LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+        if (!mounted) return false;
+        await DialogUtil.hideLoadingScreen(context);
+        setFinishWorking(true);
+      } finally {
+        setFinishWorking(true);
+      }
+    } else {}
+  }
 }

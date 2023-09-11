@@ -476,13 +476,16 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            if (mounted) {
-              await DialogUtil.hideLoadingScreen(context);
-            }
+            // if (mounted) {
+            //   await DialogUtil.hideLoadingScreen(context);
+            // }
+
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
 
             setState(() {
               if (mounted) {
-                Navigator.pushReplacement(
+                Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
@@ -494,21 +497,24 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
           } else {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(context);
             setFinishWorking(true);
           }
         } else {
           ToastMessage.showColoredToast(
               LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+          if (!mounted) return false;
+          await DialogUtil.hideLoadingScreen(context);
           setFinishWorking(true);
         }
       } catch (e) {
         ToastMessage.showColoredToast(
             LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+        if (!mounted) return false;
+        await DialogUtil.hideLoadingScreen(context);
         setFinishWorking(true);
       } finally {
-        if (mounted) {
-          await DialogUtil.hideLoadingScreen(context);
-        }
         setFinishWorking(true);
       }
     } else {}

@@ -1,4 +1,7 @@
 {
+    "XacThucThanhCong!": "Xác thực thành công!",
+    "DangNhapThanhCong!": "Đăng nhập thành công!",
+    "MotMaXacThucDaDuocGuiToiEmailVuiLongXacThuc": "Một mã xác thực đã được gửi tới email, vui lòng xác thực!",
     "Resend": "Gửi lại",
     "CodeConfirm": "Mã xác thực",
     "Confirm": "Xác thực",

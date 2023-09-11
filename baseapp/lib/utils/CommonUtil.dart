@@ -19,6 +19,13 @@ class CommonUtil {
     return result;
   }
 
+  static String DislayMMSS(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
+
   static int CheckPasswordFormat(String password){
     //Ensure string has two uppercase letters.
     RegExp passwordRegex = RegExp(r'(?=.*[A-Z])');
