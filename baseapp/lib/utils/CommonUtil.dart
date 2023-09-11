@@ -1,5 +1,5 @@
-import 'package:baseapp/commons/ErrorCode.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
+import 'package:baseapp/enums/ErrorCode.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -21,9 +21,9 @@ class CommonUtil {
 
   static int CheckPasswordFormat(String password){
     //Ensure string has two uppercase letters.
-    RegExp passwordRegex = RegExp(r'(?=.*[A-Z].*[A-Z])');
+    RegExp passwordRegex = RegExp(r'(?=.*[A-Z])');
     if(!password.contains(passwordRegex)){
-      return ErrorCode.ERROR_CODE_TWO_UPPERCASE_LETTER;
+      return ErrorCode.ERROR_CODE_ONE_UPPERCASE_LETTER;
     }
 
     //Ensure string has one special case letter.
@@ -33,15 +33,15 @@ class CommonUtil {
     }
 
     //Ensure string has two digits.
-    passwordRegex = RegExp(r"(?=.*[0-9].*[0-9])");
+    passwordRegex = RegExp(r"(?=.*[0-9])");
     if(!password.contains(passwordRegex)){
-      return ErrorCode.ERROR_CODE_TWO_DIGIT;
+      return ErrorCode.ERROR_CODE_ONE_DIGIT;
     }
 
     //Ensure string has three lowercase letters.
-    passwordRegex = RegExp(r"(?=.*[a-z].*[a-z].*[a-z])");
+    passwordRegex = RegExp(r"(?=.*[a-z])");
     if(!password.contains(passwordRegex)){
-      return ErrorCode.ERROR_CODE_THREE_LOWERCASE_LETTER;
+      return ErrorCode.ERROR_CODE_ONE_LOWERCASE_LETTER;
     }
 
     //Ensure string is of length 8
@@ -49,10 +49,51 @@ class CommonUtil {
       return ErrorCode.ERROR_CODE_SMALLER_THAN_8;
     }
 
+    //Having spaces in password
+    if(password.contains(" ")){
+      return ErrorCode.ERROR_CODE_HAVING_SPACE;
+    }
+
     return 0;
   }
 
+  static List<int> CheckPasswordFormatArr(String password){
+    List<int> listError = [];
+    //Ensure string has two uppercase letters.
+    RegExp passwordRegex = RegExp(r'(?=.*[A-Z])');
+    if(!password.contains(passwordRegex)){
+      listError.add(ErrorCode.ERROR_CODE_ONE_UPPERCASE_LETTER);
+    }
 
+    //Ensure string has one special case letter.
+    passwordRegex = RegExp(r"(?=.*[!@#$&*])");
+    if(!password.contains(passwordRegex)){
+      listError.add(ErrorCode.ERROR_CODE_ONE_SPECIAL_LETTER);
+    }
+
+    //Ensure string has two digits.
+    passwordRegex = RegExp(r"(?=.*[0-9])");
+    if(!password.contains(passwordRegex)){
+      listError.add(ErrorCode.ERROR_CODE_ONE_DIGIT);
+    }
+
+    //Ensure string has three lowercase letters.
+    passwordRegex = RegExp(r"(?=.*[a-z])");
+    if(!password.contains(passwordRegex)){
+      listError.add(ErrorCode.ERROR_CODE_ONE_LOWERCASE_LETTER);
+    }
+
+    //Ensure string is of length 8
+    if(password.length < 8){
+      listError.add(ErrorCode.ERROR_CODE_SMALLER_THAN_8);
+    }
+
+    //Having spaces in password
+    if(password.contains(" ")){
+      listError.add(ErrorCode.ERROR_CODE_HAVING_SPACE);
+    }
+    return listError;
+  }
 
   static void ChangeFocus(
       BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {

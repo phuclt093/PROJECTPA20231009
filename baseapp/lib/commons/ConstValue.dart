@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 
 class ConstValue {
-  // static String BaseUrlTest = "https://pj-tntt.conveyor.cloud/Vfis/";
-  //
-  // static const double EdgeInsetsInt = 20;
-  // static NumberFormat FormatterThousands = NumberFormat('#,###,000');
-
-  // static bool? isSearching = false;
-  // static String? qrcode = "";
-  // static String? thietbi = "";
-  // static String? thoigian = "";
-  // static String? diadiem = "";
-
-  // static String? APP_THEME = "";
-
   static String path_full_logo = "logo_full.png";
   static String path_only_logo = "logo_only.png";
 
@@ -23,7 +10,8 @@ class ConstValue {
   static String api_BaseUrl = "https://inforestapi.site";
   static String api_RegisterUserURL = "/api/login/RegisterUser";
   static String api_LoginCheckURL = "/api/login/LoginCheck";
-
+  static String api_SendEmailVerifyURL = "/api/login/SendEmailVerify";
+  static String api_CheckVerifyEmailURL = "/api/login/CheckVerifyEmail";
 
   static List<DropdownMenuItem<Locale>> dropdownItems = [
     const DropdownMenuItem(child: Text("VI"), value: Locale("vi","VN")),

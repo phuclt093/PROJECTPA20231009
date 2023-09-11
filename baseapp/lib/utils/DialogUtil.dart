@@ -1,5 +1,5 @@
-import 'package:baseapp/commons/ErrorCode.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
+import 'package:baseapp/enums/ErrorCode.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 

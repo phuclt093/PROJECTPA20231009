@@ -1,12 +1,11 @@
+import 'package:baseapp/commons/Session.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
-import 'package:baseapp/pages/auth/authentication.dart';
-import 'package:baseapp/pages/common/toast_message.dart';
+import 'package:baseapp/pages/auth/Authentication.dart';
+import 'package:baseapp/pages/common/Toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
-
-import '../../helpers/Session.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
 
 class AuthenticateBiometricsRoute extends StatefulWidget {
   AuthenticateBiometricsRoute({Key? key, required this.token})

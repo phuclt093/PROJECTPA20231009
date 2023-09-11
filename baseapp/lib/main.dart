@@ -4,14 +4,13 @@ import 'package:baseapp/models/language_notifier.dart';
 import 'package:baseapp/models/string.dart';
 import 'package:baseapp/pages/main/landing.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
-import 'package:baseapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'commons/ThemeValue.dart';
-import 'helpers/constant.dart';
+import 'commons/Constant.dart';
 import 'package:provider/provider.dart';
-import 'helpers/theme.dart';
+import 'commons/Theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -150,7 +149,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           '/': (context) => Landing(),
-          '/home': (context) => HomeScreenRoute(),
+          // '/home': (context) => HomeScreenRoute(),
           '/login': (context) => LoginPage(),
         },
         themeMode: themeNotifier.getThemeMode(),

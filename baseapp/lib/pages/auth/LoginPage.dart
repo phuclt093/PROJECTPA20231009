@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:baseapp/commons/ConstValue.dart';
-import 'package:baseapp/commons/MessageType.dart';
+import 'package:baseapp/enums/MessageType.dart';
 import 'package:baseapp/pages/auth/SignUpPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
@@ -11,15 +11,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:sizer/sizer.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
-import 'package:baseapp/pages/auth/authentication.dart';
-import 'package:baseapp/pages/common/toast_message.dart';
+import 'package:baseapp/pages/auth/Authentication.dart';
+import 'package:baseapp/pages/common/Toast_message.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:baseapp/utils/commonUtil.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
-import '../../data/img.dart';
-import '../../helpers/session.dart';
-import '../../utils/httpUtil.dart';
+import 'package:baseapp/utils/CommonUtil.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
+import '../../utils/ImageUtil.dart';
+import '../../utils/HttpUtil.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,8 +27,7 @@ class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage>
-    with TickerProviderStateMixin {
+class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   bool finishLoading = false;
   late String _username, _password;
   bool isCheckedRememberMe = true;
@@ -51,17 +49,11 @@ class LoginPageState extends State<LoginPage>
   FocusNode passFocus = FocusNode();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-
   void showInSnackBar(String value) {}
 
   @override
   void initState() {
     getPreviousUsernamePassword();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      setState(() {
-        finishLoading = true;
-      });
-    });
     super.initState();
   }
 
@@ -237,7 +229,7 @@ class LoginPageState extends State<LoginPage>
                         LocalizationUtil.translate('lblSignUp')!,
                         //login_btn
                         style: TextStyle(
-                          decoration: TextDecoration.underline,
+                            decoration: TextDecoration.underline,
                             fontSize: 10.sp,
                             color: Theme.of(context)
                                 .colorScheme
@@ -245,8 +237,10 @@ class LoginPageState extends State<LoginPage>
                       ),
                       onTap: () async {
                         FocusScope.of(context).unfocus(); //dismiss keyboard
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => const SignUpPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpPage()));
                       }),
                 )
               ],
@@ -309,19 +303,22 @@ class LoginPageState extends State<LoginPage>
   Future fnLogin(BuildContext context) async {
     if (emailEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblEmailEmpty_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblEmailEmpty_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (CommonUtil.CheckEmailFormat(emailEdit.text) == false) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!,
+          MessageType.ERROR);
       return;
     }
 
     if (passwordEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblPasswordEmpty_Message')!, MessageType.ERROR);
+          LocalizationUtil.translate('lblPasswordEmpty_Message')!,
+          MessageType.ERROR);
       return;
     }
 
@@ -335,41 +332,57 @@ class LoginPageState extends State<LoginPage>
       };
 
       var ThemeColor = Theme.of(context).colorScheme;
-      var result = await DialogUtil.fncShowLoadingScreen(context, ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
+      var result = await DialogUtil.fncShowLoadingScreen(context,
+          ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
       if (!result) {
         return false;
       }
 
-      String resultStr = await HttpHelper.fetchPost(
-          context: context,
-          fnWorking: setFinishWorking,
-          parameters: parameters,
-          isAuth: false,
-          ulr: ulr);
-
       try {
+        //Show loading
+        var ThemeColor = Theme.of(context).colorScheme;
+        var result = await DialogUtil.fncShowLoadingScreen(
+            context,
+            ThemeColor.colorIconProgress_Dialog,
+            ThemeColor.colorMessage_Dialog);
+        if (!result) {
+          return false;
+        }
+
+        String resultStr = await HttpHelper.fetchPost(
+            context: context,
+            fnWorking: setFinishWorking,
+            parameters: parameters,
+            isAuth: false,
+            ulr: ulr);
+
         final json = jsonDecode(resultStr);
         var token = Token.fromJsonLogin(json);
-        if(token != null){
+        if (token != null) {
           if (token.result == "OK") {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/login', ModalRoute.withName('/login'));
+
+            if (mounted) {
+              await DialogUtil.hideLoadingScreen(context);
+            }
+
+            setState(() {
+              if (mounted) {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
+              }
+            });
+            return;
           } else {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
             setFinishWorking(true);
           }
-        }
-        else {
-          // ToastMessage.showColoredToast(
-          //     LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+        } else {
           setFinishWorking(true);
         }
       } catch (e) {
-        // ToastMessage.showColoredToast(
-        //     LocalizationUtil.translate('lblError')!, MessageType.ERROR);
         setFinishWorking(true);
       } finally {
         if (mounted) {
@@ -377,9 +390,7 @@ class LoginPageState extends State<LoginPage>
         }
         setFinishWorking(true);
       }
-    } else {
-
-    }
+    } else {}
 
     // _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     // if (_isNetworkAvail) {
@@ -450,8 +461,6 @@ class LoginPageState extends State<LoginPage>
     //   // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
     // }
   }
-
-
 
   void _toggle() {
     setState(() {

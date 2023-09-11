@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../helpers/constant.dart';
+import '../commons/Constant.dart';
 
 //define all string here that used in json api
 

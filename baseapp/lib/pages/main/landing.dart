@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../common/progress_circle_center.dart';
+import '../common/Progress_circle_center.dart';
 import '../auth/LoginPage.dart';
 
 class Landing extends StatefulWidget {
@@ -90,10 +90,10 @@ class _LandingState extends State<Landing> with TickerProviderStateMixin {
       // });
 
       Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => const LoginPage()));
+          MaterialPageRoute(builder: (context) => const LoginPage()));
     } else {
       Navigator.pushReplacement(context,
-          CupertinoPageRoute(builder: (context) => const LoginPage()));
+          MaterialPageRoute(builder: (context) => const LoginPage()));
     }
   }
 }

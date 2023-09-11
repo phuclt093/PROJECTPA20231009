@@ -1,10 +1,10 @@
 
-import 'package:baseapp/commons/MessageType.dart';
-import 'package:baseapp/pages/common/toast_message.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
+import 'package:baseapp/enums/MessageType.dart';
+import 'package:baseapp/pages/common/Toast_message.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:baseapp/utils/commonUtil.dart';
+import 'package:baseapp/utils/CommonUtil.dart';
 import '../commons/ConstValue.dart';
 import 'package:http/http.dart' as http;
 

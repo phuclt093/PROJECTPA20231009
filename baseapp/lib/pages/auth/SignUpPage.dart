@@ -1,22 +1,21 @@
 import 'dart:convert';
-import 'package:baseapp/commons/ErrorCode.dart';
-import 'package:baseapp/commons/MessageType.dart';
+import 'package:baseapp/enums/ErrorCode.dart';
+import 'package:baseapp/enums/MessageType.dart';
 import 'package:baseapp/commons/ConstValue.dart';
+import 'package:baseapp/pages/auth/ConfirmSignUpPage.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
-import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:sizer/sizer.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
-import 'package:baseapp/pages/common/toast_message.dart';
+import 'package:baseapp/pages/common/Toast_message.dart';
 import 'package:flutter/material.dart';
-import 'package:baseapp/utils/commonUtil.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
-import '../../data/img.dart';
-import '../../utils/httpUtil.dart';
+import 'package:baseapp/utils/CommonUtil.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
+import '../../utils/ImageUtil.dart';
+import '../../utils/HttpUtil.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -27,12 +26,11 @@ class SignUpPage extends StatefulWidget {
 
 class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   bool finishLoading = false;
-  bool isCheckedRememberMe = true;
   bool _isObsecure = true;
   bool _isObsecureConfirm = true;
 
   bool _isNetworkAvail = true;
-  final TextEditingController userNameEdit = TextEditingController();
+  final TextEditingController emailEdit = TextEditingController();
   final TextEditingController passWordEdit = TextEditingController();
   final TextEditingController passWordConfirmEdit = TextEditingController();
   FocusNode emailFocus = FocusNode();
@@ -42,13 +40,15 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
   void showInSnackBar(String value) {}
 
+  bool isPasswordDigitError_Message = false;
+  bool isPasswordLengthError_Message = false;
+  bool isPasswordLowercaseError_Message = false;
+  bool isPasswordSpecialcaseError_Message = false;
+  bool isPasswordUppercaseError_Message = false;
+  bool isPasswordHavingSpaces_Message = false;
+
   @override
   void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      setState(() {
-        finishLoading = true;
-      });
-    });
     super.initState();
   }
 
@@ -123,7 +123,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                       },
                       colorFont: ThemeColor.colorFont_TextBox,
                       colorFontHint: ThemeColor.colorHint_TextBox,
-                      textController: userNameEdit,
+                      textController: emailEdit,
                       onFieldSubmitFunc: (v) {
                         CommonUtil.ChangeFocus(
                             context, emailFocus, passwordFocus);
@@ -143,7 +143,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     colorBorderEnabled: ThemeColor.colorBorder_TextBox,
                     colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
                     onChangeFunc: (String? value) {
-                      setState(() {});
+                      CheckPasswordStrength(value!);
                     },
                     colorFont: ThemeColor.colorFont_TextBox,
                     colorFontHint: ThemeColor.colorHint_TextBox,
@@ -172,7 +172,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                 ),
                 Container(
                   margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 5.h, top: 1.h),
+                      left: 10.w, right: 10.w, bottom: 1.h, top: 1.h),
                   child: CustomPasswordFieldWidget(
                     focusNode: passwordConfirmFocus,
                     borderRadius: themeValue.TextBox_BorderRadius,
@@ -183,7 +183,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     colorBorderEnabled: ThemeColor.colorBorder_TextBox,
                     colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
                     onChangeFunc: (String? value) {
-                      setState(() {});
+                      CheckPasswordStrength(value!);
                     },
                     colorFont: ThemeColor.colorFont_TextBox,
                     colorFontHint: ThemeColor.colorHint_TextBox,
@@ -206,6 +206,63 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                           },
                         )),
                     isObsecureText: _isObsecureConfirm,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      left: 10.w, right: 10.w, bottom: 0.h, top: 0.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      isPasswordDigitError_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordDigitError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                      isPasswordLengthError_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordLengthError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                      isPasswordLowercaseError_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordLowercaseError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                      isPasswordSpecialcaseError_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordSpecialcaseError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                      isPasswordUppercaseError_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordUppercaseError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                      isPasswordHavingSpaces_Message == true
+                          ? Text(
+                              LocalizationUtil.translate(
+                                  "PasswordSpaceError_Message"),
+                              style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: ThemeColor.colorHint_TextBox))
+                          : Container(),
+                    ],
                   ),
                 ),
                 Container(
@@ -254,6 +311,43 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     );
   }
 
+  void CheckPasswordStrength(String password) {
+    isPasswordDigitError_Message = false;
+    isPasswordLengthError_Message = false;
+    isPasswordLowercaseError_Message = false;
+    isPasswordSpecialcaseError_Message = false;
+    isPasswordUppercaseError_Message = false;
+    isPasswordHavingSpaces_Message = false;
+
+    if (password.isEmpty == false) {
+      var listError = CommonUtil.CheckPasswordFormatArr(password);
+      if (listError.contains(ErrorCode.ERROR_CODE_ONE_UPPERCASE_LETTER)) {
+        isPasswordUppercaseError_Message = true;
+      }
+
+      if (listError.contains(ErrorCode.ERROR_CODE_ONE_SPECIAL_LETTER)) {
+        isPasswordSpecialcaseError_Message = true;
+      }
+
+      if (listError.contains(ErrorCode.ERROR_CODE_ONE_DIGIT)) {
+        isPasswordDigitError_Message = true;
+      }
+
+      if (listError.contains(ErrorCode.ERROR_CODE_ONE_LOWERCASE_LETTER)) {
+        isPasswordLowercaseError_Message = true;
+      }
+
+      if (listError.contains(ErrorCode.ERROR_CODE_SMALLER_THAN_8)) {
+        isPasswordLengthError_Message = true;
+      }
+
+      if (listError.contains(ErrorCode.ERROR_CODE_HAVING_SPACE)) {
+        isPasswordHavingSpaces_Message = true;
+      }
+    }
+    setState(() {});
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -268,14 +362,14 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   }
 
   Future fnSignUp(BuildContext context) async {
-    if (userNameEdit.text.isEmpty) {
+    if (emailEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('lblEmailEmpty_Message')!,
           MessageType.ERROR);
       return;
     }
 
-    if (CommonUtil.CheckEmailFormat(userNameEdit.text) == false) {
+    if (CommonUtil.CheckEmailFormat(emailEdit.text) == false) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('lblEmailFormatInvalid_Message')!,
           MessageType.ERROR);
@@ -305,7 +399,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
     //Check password strength
     var resultCheck = CommonUtil.CheckPasswordFormat(passWordEdit.text);
-    if (resultCheck == ErrorCode.ERROR_CODE_TWO_UPPERCASE_LETTER) {
+    if (resultCheck == ErrorCode.ERROR_CODE_ONE_UPPERCASE_LETTER) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('PasswordUppercaseError_Message')!,
           MessageType.ERROR);
@@ -319,14 +413,14 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       return false;
     }
 
-    if (resultCheck == ErrorCode.ERROR_CODE_TWO_DIGIT) {
+    if (resultCheck == ErrorCode.ERROR_CODE_ONE_DIGIT) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('PasswordDigitError_Message')!,
           MessageType.ERROR);
       return false;
     }
 
-    if (resultCheck == ErrorCode.ERROR_CODE_THREE_LOWERCASE_LETTER) {
+    if (resultCheck == ErrorCode.ERROR_CODE_ONE_LOWERCASE_LETTER) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('PasswordLowercaseError_Message')!,
           MessageType.ERROR);
@@ -340,39 +434,63 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       return false;
     }
 
+    if (resultCheck == ErrorCode.ERROR_CODE_HAVING_SPACE) {
+      ToastMessage.showColoredToast(
+          LocalizationUtil.translate('PasswordSpaceError_Message')!,
+          MessageType.ERROR);
+      return false;
+    }
+
     _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     if (_isNetworkAvail) {
       String ulr = ConstValue.api_RegisterUserURL;
       setFinishWorking(false);
       Map<String, String> parameters = {
-        'email': userNameEdit.text.toString(),
+        'email': emailEdit.text.toString(),
         'pass': passWordEdit.text.toString(),
         'retypepass': passWordConfirmEdit.text.toString()
       };
 
-      var ThemeColor = Theme.of(context).colorScheme;
-      var result = await DialogUtil.fncShowLoadingScreen(context,
-          ThemeColor.colorIconProgress_Dialog, ThemeColor.colorMessage_Dialog);
-      if (!result) {
-        return false;
-      }
-
-      String resultStr = await HttpHelper.fetchPost(
-          context: context,
-          fnWorking: setFinishWorking,
-          parameters: parameters,
-          isAuth: false,
-          ulr: ulr);
-
       try {
+        //Show loading
+        var ThemeColor = Theme.of(context).colorScheme;
+        var result = await DialogUtil.fncShowLoadingScreen(
+            context,
+            ThemeColor.colorIconProgress_Dialog,
+            ThemeColor.colorMessage_Dialog);
+        if (!result) {
+          return false;
+        }
+
+        String resultStr = await HttpHelper.fetchPost(
+            context: context,
+            fnWorking: setFinishWorking,
+            parameters: parameters,
+            isAuth: false,
+            ulr: ulr);
+
         final json = jsonDecode(resultStr);
         var token = Token.fromJsonSignUp(json);
         if (token != null) {
           if (token.result == "OK") {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
-            Navigator.pushNamedAndRemoveUntil(
-                context, '/login', ModalRoute.withName('/login'));
+
+            if (mounted) {
+              await DialogUtil.hideLoadingScreen(context);
+            }
+
+            setState(() {
+              if (mounted) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ConfirmSignUpPage(email: emailEdit.text)));
+              }
+            });
+
+            return;
           } else {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!)!, MessageType.ERROR);

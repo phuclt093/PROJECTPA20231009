@@ -1,6 +1,6 @@
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:flutter/material.dart';
-import 'package:baseapp/utils/localizationUtil.dart';
+import 'package:baseapp/utils/LocalizationUtil.dart';
 
 class CustomTextFieldWidget extends StatelessWidget {
   CustomTextFieldWidget({super.key,

@@ -6,7 +6,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../data/img.dart';
+import '../../utils/ImageUtil.dart';
 
 class ProgressCircleCenter {
   BuildContext context;

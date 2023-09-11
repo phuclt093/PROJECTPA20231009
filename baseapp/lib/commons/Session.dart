@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:baseapp/models/menu_model.dart';
-import '../data/img.dart';
+import '../utils/ImageUtil.dart';
 
 // showSnackBar(String msg, BuildContext context) {
 //   ScaffoldMessenger.of(context).showSnackBar(
