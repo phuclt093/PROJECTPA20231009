@@ -3,6 +3,7 @@ import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/enums/MessageType.dart';
 import 'package:baseapp/pages/auth/ResetPasswordPage.dart';
 import 'package:baseapp/pages/auth/SignUpPage.dart';
+import 'package:baseapp/pages/home/HomePage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
@@ -406,12 +407,14 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 Navigator.of(dialogcontext!).pop();
               }
             });
-            // setState(() {
-            //   if (mounted) {
-            //     Navigator.pushReplacement(context,
-            //         MaterialPageRoute(builder: (context) => const LoginPage()));
-            //   }
-            // });
+            setState(() async {
+              if (mounted) {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                CommonUtil.SetSessionLogin(token, prefs);
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const HomePage()));
+              }
+            });
             return;
           } else {
             if (!mounted) return false;

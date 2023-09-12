@@ -1,6 +1,8 @@
 import 'package:baseapp/enums/ErrorCode.dart';
+import 'package:baseapp/models/token.dart';
 import 'package:baseapp/utils/LocalizationUtil.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class CommonUtil {
@@ -17,6 +19,24 @@ class CommonUtil {
       result = false;
     }
     return result;
+  }
+
+  static void SetSessionLogin(Token token, SharedPreferences prefs){
+    prefs.setString("id_token", token.idToken ?? "");
+    prefs.setString("username", token.username ?? "");
+    prefs.setString("userTypeID", token.userTypeID ?? "");
+    prefs.setString("email", token.email ?? "");
+    prefs.setString("fullName", token.fullName ?? "");
+    prefs.setString("userType", token.userType ?? "");
+  }
+
+  static void ClearSessionLogin(SharedPreferences prefs){
+    prefs.remove("id_token");
+    prefs.remove("username");
+    prefs.remove("userTypeID");
+    prefs.remove("email");
+    prefs.remove("fullName");
+    prefs.remove("userType");
   }
 
   static String DislayMMSS(Duration duration) {
@@ -139,6 +159,53 @@ class CommonUtil {
             icon: Icon(Icons.chevron_left, color: colorIcon, size: 5.h),
             onPressed: () {
               onBack!();
+            },
+          )),
+    );
+  }
+
+  static PreferredSizeWidget SetHomeAppBar(
+      {String? title,
+        BuildContext? context,
+        Color? background,
+        Color? foreground,
+        Color? colorFont,
+        Color? colorIcon,
+        double? fontSize,
+        double? iconSize,
+        Function? onBack,
+        GlobalKey<ScaffoldState>? scaffoldKey}) {
+    var barPadding = EdgeInsets.fromLTRB(0.w, 0.h, 0.w, 0.h);
+
+    return AppBar(
+      title: Container(
+        padding: barPadding,
+        child: Text(
+          LocalizationUtil.translate(title!),
+          style: TextStyle(
+              color: colorFont,
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold),
+        ),
+      ),
+      backgroundColor: background,
+      foregroundColor: foreground,
+      toolbarHeight: 8.h,
+      leading: Padding(
+          padding: barPadding,
+          child: IconButton(
+            padding: EdgeInsets.only(left: 0.w,top: 0.h, right: 0.w, bottom: 0.h),
+            icon: Icon(Icons.menu,
+                size: iconSize,
+                color: colorIcon),
+            onPressed: () {
+              if(scaffoldKey! != null){
+                if (scaffoldKey!.currentState!.isDrawerOpen) {
+                  scaffoldKey.currentState!.closeDrawer();
+                } else {
+                  scaffoldKey.currentState!.openDrawer();
+                }
+              }
             },
           )),
     );
