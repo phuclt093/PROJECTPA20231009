@@ -1,9 +1,10 @@
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:flutter/material.dart';
 import 'package:baseapp/utils/LocalizationUtil.dart';
+import 'package:sizer/sizer.dart';
 
-class CustomLanguageSelectBoxWidget extends StatelessWidget {
-  CustomLanguageSelectBoxWidget(
+class CustomSelectBoxWidget extends StatelessWidget {
+  CustomSelectBoxWidget(
       {super.key,
       this.fontSize,
       this.selectedLang,
@@ -28,9 +29,10 @@ class CustomLanguageSelectBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
-
         child: DropdownButton(
-          iconEnabledColor: colorIconEnabled,
+      iconEnabledColor: colorIconEnabled,
+      padding: EdgeInsets.only(top: 1.h, bottom: 1.h),
+      isDense: true,
       style: TextStyle(
           color: colorFont, fontWeight: FontWeight.bold, fontSize: fontSize),
       value: selectedLang,

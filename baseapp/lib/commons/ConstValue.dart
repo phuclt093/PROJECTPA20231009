@@ -20,5 +20,4 @@ class ConstValue {
     const DropdownMenuItem(child: Text("VI"), value: Locale("vi","VN")),
     const DropdownMenuItem(child: Text("US"), value: Locale("en","US")),
   ];
-
 }

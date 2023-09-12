@@ -76,7 +76,7 @@ class ResetPasswordPageState extends State<ResetPasswordPage> with TickerProvide
                 padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
                 decoration:
                     BoxDecoration(color: ThemeColor.colorBackground_Dropdown),
-                child: CustomLanguageSelectBoxWidget(
+                child: CustomSelectBoxWidget(
                   colorIconEnabled: ThemeColor.colorIconEnabled_Dropdown,
                   colorFont: ThemeColor.colorFont_Dropdown,
                   coloBackground: ThemeColor.colorBackground_Dropdown,
