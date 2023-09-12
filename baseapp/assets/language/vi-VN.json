@@ -1,4 +1,6 @@
 {
+    "XacThucThanhCongBatManHinhPassChoChangePass!": "Xác thực thành công!",
+    "ThoiGianXacThucDaHetVuiLongLayLaiMa!" : "Thời gian xác thực đã hết, vui lòng thử lại!",
     "MaXacThucKhongDungVuiLongNhapLai!": "Mã xác thực không đúng, vui lòng nhập lại!",
     "CodeConfirmEmpty_Message": "Vui lòng nhập mã xác thực!",
     "ChangePassword": "Đổi mật khẩu",

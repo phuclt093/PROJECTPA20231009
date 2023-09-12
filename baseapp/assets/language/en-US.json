@@ -1,4 +1,6 @@
 {
+  "XacThucThanhCongBatManHinhPassChoChangePass!": "Confirm successful!",
+  "ThoiGianXacThucDaHetVuiLongLayLaiMa!" : "Time expired, please try again!",
   "MaXacThucKhongDungVuiLongNhapLai!": "Code confirm is incorrect, please try again!",
   "CodeConfirmEmpty_Message": "Please input code!",
   "ChangePassword": "Change password",
