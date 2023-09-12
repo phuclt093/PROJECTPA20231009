@@ -5,8 +5,10 @@ import 'package:baseapp/enums/MessageType.dart';
 import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
+import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sizer/sizer.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
@@ -43,7 +45,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
     const oneSec = const Duration(seconds: 1);
     timerCountDown = new Timer.periodic(
       oneSec,
-          (Timer timer) {
+      (Timer timer) {
         if (duration.inSeconds <= 0) {
           setState(() {
             timer.cancel();
@@ -69,150 +71,165 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
   Widget build(BuildContext context) {
     dialogcontext = context;
     var ThemeColor = Theme.of(context).colorScheme;
-    return Stack(
-      children: [
-        Image.asset(
-          "assets/images/main_background.jpg",
-          height: double.infinity,
-          width: double.infinity,
-          fit: BoxFit.fill,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      key: _scaffoldKey,
+      appBar: CommonUtil.SetAppBar(
+          context: context,
+          fontSize: 18.sp,
+          title: LocalizationUtil.translate("lblConfirmSignUp"),
+          background: ThemeColor.colorAppBar_Background,
+          foreground: ThemeColor.colorAppBar_Foreground,
+          colorFont: ThemeColor.colorAppBar_Font,
+          colorIcon: ThemeColor.colorAppBar_Icon,
+          onBack: () {
+            Navigator.pop(context);
+          }),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/main_background.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          key: _scaffoldKey,
-          appBar: CommonUtil.SetAppBar(
-              context: context,
-              fontSize: 18.sp,
-              title: LocalizationUtil.translate("lblConfirmSignUp"),
-              background: ThemeColor.colorAppBar_Background,
-              foreground: ThemeColor.colorAppBar_Foreground,
-              colorFont: ThemeColor.colorAppBar_Font,
-              colorIcon: ThemeColor.colorAppBar_Icon,
-              onBack: () {
-                Navigator.pop(context);
-              }),
-          body: SingleChildScrollView(
-              child: Align(
+        child: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
-                  child: Image.asset(
-                    Img.get(ConstValue.path_full_logo),
-                    //color: Colors.white,
-                  ),
-                  width: 80.w,
-                  height: 12.h,
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0.5.h, 0, 5.h),
-                  child: Text(
-                    LocalizationUtil.translate("lblChatYourWay"),
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.sp,
-                        color: ThemeColor.colorHint_TextBox),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
-                  child: CustomTextFieldWidget(
-                      focusNode: codeFocus,
-                      borderRadius: themeValue.TextBox_BorderRadius,
-                      coloBackground: Theme.of(context)
-                          .colorScheme
-                          .colorBackground_TextBox
-                          .withOpacity(0.7),
-                      colorBorderEnabled: ThemeColor.colorBorder_TextBox,
-                      colorBorderFocus: Theme.of(context)
-                          .colorScheme
-                          .colorBorderActive_TextBox,
-                      onChangeFunc: (String? value) {
-                        setState(() {
-                          // _username = value;
-                        });
-                      },
-                      colorFont: ThemeColor.colorFont_TextBox,
-                      colorFontHint: ThemeColor.colorHint_TextBox,
-                      textController: codeEdit,
-                      onFieldSubmitFunc: (v) {},
-                      hintLabel: LocalizationUtil.translate('CodeConfirm')!),
-                ),
-                duration.inSeconds <= 0 ? Container(
-                  margin: EdgeInsets.only(
-                      left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
-                  child: InkWell(
-                      splashColor: Colors.transparent,
-                      child: Text(
-                        LocalizationUtil.translate('Resend')!,
-                        //login_btn
-                        style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 10.sp,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .colorHint_TextBox),
-                      ),
-                      onTap: () async {
-                        fnGetCodeConfirmInEmail(context);
-                      }),
-                ) :  Container(
-                  margin: EdgeInsets.only(
-                      left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
-                  child: Text(
-                    CommonUtil.DislayMMSS(duration),
-                    //login_btn
-                    style: TextStyle(
-                        fontSize: 10.sp,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .colorHint_TextBox),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 30.w, right: 30.w, bottom: 1.h, top: 5.h),
-                  child: InkWell(
-                      splashColor: Colors.transparent,
-                      child: Container(
-                        height: 6.h,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .colorButtonLogin_Background,
-                            borderRadius: BorderRadius.circular(
-                                themeValue.Button_BorderRadius)),
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.fromLTRB(60.w, 5.h, 0.w, 0),
+                padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
+                decoration:
+                    BoxDecoration(color: ThemeColor.colorBackground_Dropdown),
+                child: CustomLanguageSelectBoxWidget(
+                  colorIconEnabled: ThemeColor.colorIconEnabled_Dropdown,
+                  colorFont: ThemeColor.colorFont_Dropdown,
+                  coloBackground: ThemeColor.colorBackground_Dropdown,
+                  fontSize: 10.sp,
+                  dropdownItems: ConstValue.dropdownItems,
+                  selectedLang: context.locale,
+                  onChangeFunc: (Object? newValue) {
+                    Locale? selected = newValue as Locale?;
+                    LocalizationUtil.ChangeLanguage(selected!, context);
+                    setState(() {});
+                  },
+                )),
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
+              child: Image.asset(
+                Img.get(ConstValue.path_full_logo),
+                //color: Colors.white,
+              ),
+              width: themeValue.widthMainLogo,
+              height: themeValue.heightMainLogo,
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 0.5.h, 0, 5.h),
+              child: Text(
+                LocalizationUtil.translate("lblChatYourWay"),
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.sp,
+                    color: ThemeColor.colorHint_TextBox),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
+              child: CustomTextFieldWidget(
+                  focusNode: codeFocus,
+                  borderRadius: themeValue.TextBox_BorderRadius,
+                  coloBackground: Theme.of(context)
+                      .colorScheme
+                      .colorBackground_TextBox
+                      .withOpacity(0.7),
+                  colorBorderEnabled: ThemeColor.colorBorder_TextBox,
+                  colorBorderFocus:
+                      Theme.of(context).colorScheme.colorBorderActive_TextBox,
+                  onChangeFunc: (String? value) {
+                    setState(() {
+                      // _username = value;
+                    });
+                  },
+                  colorFont: ThemeColor.colorFont_TextBox,
+                  colorFontHint: ThemeColor.colorHint_TextBox,
+                  textController: codeEdit,
+                  onFieldSubmitFunc: (v) {},
+                  hintLabel: LocalizationUtil.translate('CodeConfirm')!),
+            ),
+            duration.inSeconds <= 0
+                ? Container(
+                    margin: EdgeInsets.only(
+                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                    child: InkWell(
+                        splashColor: Colors.transparent,
                         child: Text(
-                          LocalizationUtil.translate('Confirm')!,
+                          LocalizationUtil.translate('Resend')!,
                           //login_btn
                           style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .colorButtonLogin_Text),
+                              decoration: TextDecoration.underline,
+                              fontSize: 12.sp,
+                              color:
+                                  Theme.of(context).colorScheme.colorText_Link),
                         ),
-                      ),
-                      onTap: () async {
-                        FocusScope.of(context).unfocus(); //dismiss keyboard
-                        _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
-                        if (_isNetworkAvail) {
-                          setState(() {
-                            finishLoading = true;
-                          });
-                          fnConfirmSignUp(context);
-                        } else {
-                          // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
-                        }
-                      }),
-                )
-              ],
-            ),
-          )),
-        )
-      ],
+                        onTap: () async {
+                          fnGetCodeConfirmInEmail(context);
+                        }),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(
+                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                    child: Text(
+                      CommonUtil.DislayMMSS(duration),
+                      //login_btn
+                      style: TextStyle(
+                          fontSize: 10.sp,
+                          color:
+                              Theme.of(context).colorScheme.colorHint_TextBox),
+                    ),
+                  ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 30.w, right: 30.w, bottom: 1.h, top: 5.h),
+              child: InkWell(
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 6.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .colorButtonLogin_Background,
+                        borderRadius: BorderRadius.circular(
+                            themeValue.Button_BorderRadius)),
+                    child: Text(
+                      LocalizationUtil.translate('Confirm')!,
+                      //login_btn
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .colorButtonLogin_Text),
+                    ),
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).unfocus(); //dismiss keyboard
+                    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+                    if (_isNetworkAvail) {
+                      setState(() {
+                        finishLoading = true;
+                      });
+                      fnConfirmSignUp(context);
+                    } else {
+                      // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
+                    }
+                  }),
+            )
+          ],
+        )),
+      ),
     );
   }
 
@@ -244,7 +261,6 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
       Map<String, String> parameters = {
         'email': widget.email,
       };
-
 
       try {
         //Show loading
@@ -321,7 +337,6 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
         'email': widget.email,
         'randomnumber': codeEdit.text.toString(),
       };
-
 
       try {
         //Show loading

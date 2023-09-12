@@ -5,8 +5,10 @@ import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/pages/auth/ConfirmSignUpPage.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
+import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:sizer/sizer.dart';
 import 'package:baseapp/commons/ThemeValue.dart';
 import 'package:baseapp/models/token.dart';
@@ -57,259 +59,272 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     dialogcontext = context;
     var ThemeColor = Theme.of(context).colorScheme;
-    return Stack(
-      children: [
-        Image.asset(
-          "assets/images/main_background.jpg",
-          height: double.infinity,
-          width: double.infinity,
-          fit: BoxFit.fill,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      key: _scaffoldKey,
+      appBar: CommonUtil.SetAppBar(
+          context: context,
+          fontSize: 18.sp,
+          title: LocalizationUtil.translate("lblSignUp"),
+          background: ThemeColor.colorAppBar_Background,
+          foreground: ThemeColor.colorAppBar_Foreground,
+          colorFont: ThemeColor.colorAppBar_Font,
+          colorIcon: ThemeColor.colorAppBar_Icon,
+          onBack: () {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const LoginPage()));
+          }),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/main_background.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          key: _scaffoldKey,
-          appBar: CommonUtil.SetAppBar(
-              context: context,
-              fontSize: 18.sp,
-              title: LocalizationUtil.translate("lblSignUp"),
-              background: ThemeColor.colorAppBar_Background,
-              foreground: ThemeColor.colorAppBar_Foreground,
-              colorFont: ThemeColor.colorAppBar_Font,
-              colorIcon: ThemeColor.colorAppBar_Icon,
-              onBack: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
-              }),
-          body: SingleChildScrollView(
-              child: Align(
+        child: SingleChildScrollView(
             child: Column(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
-                  child: Image.asset(
-                    Img.get(ConstValue.path_full_logo),
-                    //color: Colors.white,
-                  ),
-                  width: 80.w,
-                  height: 12.h,
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0.5.h, 0, 5.h),
-                  child: Text(
-                    LocalizationUtil.translate("lblChatYourWay"),
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.sp,
-                        color: ThemeColor.colorHint_TextBox),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
-                  child: CustomTextFieldWidget(
-                      focusNode: emailFocus,
-                      borderRadius: themeValue.TextBox_BorderRadius,
-                      coloBackground: Theme.of(context)
-                          .colorScheme
-                          .colorBackground_TextBox
-                          .withOpacity(0.7),
-                      colorBorderEnabled: ThemeColor.colorBorder_TextBox,
-                      colorBorderFocus: Theme.of(context)
-                          .colorScheme
-                          .colorBorderActive_TextBox,
-                      onChangeFunc: (String? value) {
-                        setState(() {
-                          // _username = value;
-                        });
-                      },
-                      colorFont: ThemeColor.colorFont_TextBox,
-                      colorFontHint: ThemeColor.colorHint_TextBox,
-                      textController: emailEdit,
-                      onFieldSubmitFunc: (v) {
-                        CommonUtil.ChangeFocus(
-                            context, emailFocus, passwordFocus);
-                      },
-                      hintLabel: LocalizationUtil.translate('lblEmail')!),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 1.h, top: 1.h),
-                  child: CustomPasswordFieldWidget(
-                    focusNode: passwordFocus,
-                    borderRadius: themeValue.TextBox_BorderRadius,
-                    coloBackground: Theme.of(context)
-                        .colorScheme
-                        .colorBackground_TextBox
-                        .withOpacity(0.7),
-                    colorBorderEnabled: ThemeColor.colorBorder_TextBox,
-                    colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
-                    onChangeFunc: (String? value) {
-                      CheckPasswordStrength(value!);
-                    },
-                    colorFont: ThemeColor.colorFont_TextBox,
-                    colorFontHint: ThemeColor.colorHint_TextBox,
-                    textController: passWordEdit,
-                    onFieldSubmitFunc: (v) {
-                      CommonUtil.ChangeFocus(
-                          context, passwordFocus, passwordConfirmFocus);
-                    },
-                    hintLabel: LocalizationUtil.translate('lblPassword')!,
-                    suffixIcon: Padding(
-                        padding: EdgeInsetsDirectional.only(end: 1.w),
-                        child: IconButton(
-                          icon: !_isObsecure
-                              ? Icon(Icons.visibility_rounded, size: 2.h)
-                              : Icon(Icons.visibility_off_rounded, size: 2.h),
-                          color: ThemeColor.colorHint_TextBox,
-                          splashColor: Theme.of(context)
-                              .colorScheme
-                              .colorSplashSuffix_Password,
-                          onPressed: () {
-                            _toggle();
-                          },
-                        )),
-                    isObsecureText: _isObsecure,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 1.h, top: 1.h),
-                  child: CustomPasswordFieldWidget(
-                    focusNode: passwordConfirmFocus,
-                    borderRadius: themeValue.TextBox_BorderRadius,
-                    coloBackground: Theme.of(context)
-                        .colorScheme
-                        .colorBackground_TextBox
-                        .withOpacity(0.7),
-                    colorBorderEnabled: ThemeColor.colorBorder_TextBox,
-                    colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
-                    onChangeFunc: (String? value) {
-                      CheckPasswordStrength(value!);
-                    },
-                    colorFont: ThemeColor.colorFont_TextBox,
-                    colorFontHint: ThemeColor.colorHint_TextBox,
-                    textController: passWordConfirmEdit,
-                    onFieldSubmitFunc: (v) {},
-                    hintLabel:
-                        LocalizationUtil.translate('lblPasswordConfirm')!,
-                    suffixIcon: Padding(
-                        padding: EdgeInsetsDirectional.only(end: 1.w),
-                        child: IconButton(
-                          icon: !_isObsecureConfirm
-                              ? Icon(Icons.visibility_rounded, size: 2.h)
-                              : Icon(Icons.visibility_off_rounded, size: 2.h),
-                          color: ThemeColor.colorHint_TextBox,
-                          splashColor: Theme.of(context)
-                              .colorScheme
-                              .colorSplashSuffix_Password,
-                          onPressed: () {
-                            _toggleConfirm();
-                          },
-                        )),
-                    isObsecureText: _isObsecureConfirm,
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 10.w, right: 10.w, bottom: 0.h, top: 0.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      isPasswordDigitError_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordDigitError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                      isPasswordLengthError_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordLengthError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                      isPasswordLowercaseError_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordLowercaseError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                      isPasswordSpecialcaseError_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordSpecialcaseError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                      isPasswordUppercaseError_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordUppercaseError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                      isPasswordHavingSpaces_Message == true
-                          ? Text(
-                              LocalizationUtil.translate(
-                                  "PasswordSpaceError_Message"),
-                              style: TextStyle(
-                                  fontSize: 10.sp,
-                                  color: ThemeColor.colorHint_TextBox))
-                          : Container(),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
-                  child: InkWell(
-                      splashColor: Colors.transparent,
-                      child: Container(
-                        height: 6.h,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .colorButtonLogin_Background,
-                            borderRadius: BorderRadius.circular(
-                                themeValue.Button_BorderRadius)),
-                        child: Text(
-                          LocalizationUtil.translate('lblSignUp')!,
-                          //login_btn
-                          style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .colorButtonLogin_Text),
-                        ),
-                      ),
-                      onTap: () async {
-                        FocusScope.of(context).unfocus(); //dismiss keyboard
-                        _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
-                        if (_isNetworkAvail) {
-                          setState(() {
-                            finishLoading = true;
-                          });
-                          fnSignUp(context);
-                          //signInWithEmailPassword(email!.trim(), pass!);
-                        } else {
-                          // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
-                        }
-                      }),
-                )
-              ],
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.fromLTRB(60.w, 5.h, 0.w, 0),
+                padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
+                decoration:
+                    BoxDecoration(color: ThemeColor.colorBackground_Dropdown),
+                child: CustomLanguageSelectBoxWidget(
+                  colorIconEnabled: ThemeColor.colorIconEnabled_Dropdown,
+                  colorFont: ThemeColor.colorFont_Dropdown,
+                  coloBackground: ThemeColor.colorBackground_Dropdown,
+                  fontSize: 10.sp,
+                  dropdownItems: ConstValue.dropdownItems,
+                  selectedLang: context.locale,
+                  onChangeFunc: (Object? newValue) {
+                    Locale? selected = newValue as Locale?;
+                    LocalizationUtil.ChangeLanguage(selected!, context);
+                    setState(() {});
+                  },
+                )),
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
+              child: Image.asset(
+                Img.get(ConstValue.path_full_logo),
+                //color: Colors.white,
+              ),
+              width: themeValue.widthMainLogo,
+              height: themeValue.heightMainLogo,
             ),
-          )),
-        )
-      ],
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 0.5.h, 0, 5.h),
+              child: Text(
+                LocalizationUtil.translate("lblChatYourWay"),
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.sp,
+                    color: ThemeColor.colorHint_TextBox),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
+              child: CustomTextFieldWidget(
+                  focusNode: emailFocus,
+                  borderRadius: themeValue.TextBox_BorderRadius,
+                  coloBackground: Theme.of(context)
+                      .colorScheme
+                      .colorBackground_TextBox
+                      .withOpacity(0.7),
+                  colorBorderEnabled: ThemeColor.colorBorder_TextBox,
+                  colorBorderFocus:
+                      Theme.of(context).colorScheme.colorBorderActive_TextBox,
+                  onChangeFunc: (String? value) {
+                    setState(() {
+                      // _username = value;
+                    });
+                  },
+                  colorFont: ThemeColor.colorFont_TextBox,
+                  colorFontHint: ThemeColor.colorHint_TextBox,
+                  textController: emailEdit,
+                  onFieldSubmitFunc: (v) {
+                    CommonUtil.ChangeFocus(context, emailFocus, passwordFocus);
+                  },
+                  hintLabel: LocalizationUtil.translate('lblEmail')!),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 1.h, top: 1.h),
+              child: CustomPasswordFieldWidget(
+                focusNode: passwordFocus,
+                borderRadius: themeValue.TextBox_BorderRadius,
+                coloBackground: Theme.of(context)
+                    .colorScheme
+                    .colorBackground_TextBox
+                    .withOpacity(0.7),
+                colorBorderEnabled: ThemeColor.colorBorder_TextBox,
+                colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
+                onChangeFunc: (String? value) {
+                  CheckPasswordStrength(value!);
+                },
+                colorFont: ThemeColor.colorFont_TextBox,
+                colorFontHint: ThemeColor.colorHint_TextBox,
+                textController: passWordEdit,
+                onFieldSubmitFunc: (v) {
+                  CommonUtil.ChangeFocus(
+                      context, passwordFocus, passwordConfirmFocus);
+                },
+                hintLabel: LocalizationUtil.translate('lblPassword')!,
+                suffixIcon: Padding(
+                    padding: EdgeInsetsDirectional.only(end: 1.w),
+                    child: IconButton(
+                      icon: !_isObsecure
+                          ? Icon(Icons.visibility_rounded, size: 2.h)
+                          : Icon(Icons.visibility_off_rounded, size: 2.h),
+                      color: ThemeColor.colorHint_TextBox,
+                      splashColor: Theme.of(context)
+                          .colorScheme
+                          .colorSplashSuffix_Password,
+                      onPressed: () {
+                        _toggle();
+                      },
+                    )),
+                isObsecureText: _isObsecure,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 1.h, top: 1.h),
+              child: CustomPasswordFieldWidget(
+                focusNode: passwordConfirmFocus,
+                borderRadius: themeValue.TextBox_BorderRadius,
+                coloBackground: Theme.of(context)
+                    .colorScheme
+                    .colorBackground_TextBox
+                    .withOpacity(0.7),
+                colorBorderEnabled: ThemeColor.colorBorder_TextBox,
+                colorBorderFocus: ThemeColor.colorBorderActive_TextBox,
+                onChangeFunc: (String? value) {
+                  CheckPasswordStrength(value!);
+                },
+                colorFont: ThemeColor.colorFont_TextBox,
+                colorFontHint: ThemeColor.colorHint_TextBox,
+                textController: passWordConfirmEdit,
+                onFieldSubmitFunc: (v) {},
+                hintLabel: LocalizationUtil.translate('lblPasswordConfirm')!,
+                suffixIcon: Padding(
+                    padding: EdgeInsetsDirectional.only(end: 1.w),
+                    child: IconButton(
+                      icon: !_isObsecureConfirm
+                          ? Icon(Icons.visibility_rounded, size: 2.h)
+                          : Icon(Icons.visibility_off_rounded, size: 2.h),
+                      color: ThemeColor.colorHint_TextBox,
+                      splashColor: Theme.of(context)
+                          .colorScheme
+                          .colorSplashSuffix_Password,
+                      onPressed: () {
+                        _toggleConfirm();
+                      },
+                    )),
+                isObsecureText: _isObsecureConfirm,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 0.h, top: 0.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  isPasswordDigitError_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordDigitError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                  isPasswordLengthError_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordLengthError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                  isPasswordLowercaseError_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordLowercaseError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                  isPasswordSpecialcaseError_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordSpecialcaseError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                  isPasswordUppercaseError_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordUppercaseError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                  isPasswordHavingSpaces_Message == true
+                      ? Text(
+                          LocalizationUtil.translate(
+                              "PasswordSpaceError_Message"),
+                          style: TextStyle(
+                              fontSize: 10.sp,
+                              color: ThemeColor.colorHint_TextBox))
+                      : Container(),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+              child: InkWell(
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    height: 6.h,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .colorButtonLogin_Background,
+                        borderRadius: BorderRadius.circular(
+                            themeValue.Button_BorderRadius)),
+                    child: Text(
+                      LocalizationUtil.translate('lblSignUp')!,
+                      //login_btn
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .colorButtonLogin_Text),
+                    ),
+                  ),
+                  onTap: () async {
+                    FocusScope.of(context).unfocus(); //dismiss keyboard
+                    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+                    if (_isNetworkAvail) {
+                      setState(() {
+                        finishLoading = true;
+                      });
+                      fnSignUp(context);
+                      //signInWithEmailPassword(email!.trim(), pass!);
+                    } else {
+                      // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
+                    }
+                  }),
+            )
+          ],
+        )),
+      ),
     );
   }
 
