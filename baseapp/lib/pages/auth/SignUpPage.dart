@@ -5,7 +5,7 @@ import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/pages/auth/ConfirmSignUpPage.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
-import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
+import 'package:baseapp/widgets/CustomSelectBoxWidget.dart';
 import 'package:baseapp/widgets/CustomPasswordFieldWidget.dart';
 import 'package:baseapp/widgets/CustomTextFieldWidget.dart';
 import 'package:easy_localization/easy_localization.dart';
