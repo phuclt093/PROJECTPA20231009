@@ -621,11 +621,8 @@ class ConfirmResetPasswordPageState extends State<ConfirmResetPasswordPage>
 
             setState(() {
               if (mounted) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ConfirmSignUpPage(email: codeEdit.text)));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
               }
             });
 
