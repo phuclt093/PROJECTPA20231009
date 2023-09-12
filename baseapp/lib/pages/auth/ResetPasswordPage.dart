@@ -243,7 +243,15 @@ class ResetPasswordPageState extends State<ResetPasswordPage> with TickerProvide
             if (!mounted) return false;
             await DialogUtil.hideLoadingScreen(dialogcontext!);
 
-
+            setState(() {
+              if (mounted) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ConfirmResetPasswordPage(email: emailEdit.text)));
+              }
+            });
 
             return;
           } else {
