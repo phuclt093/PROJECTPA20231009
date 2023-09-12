@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:baseapp/commons/ConstValue.dart';
 import 'package:baseapp/enums/MessageType.dart';
+import 'package:baseapp/pages/auth/ResetPasswordPage.dart';
 import 'package:baseapp/pages/auth/SignUpPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
@@ -66,7 +67,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         // alignment: Alignment.center,
         // children: [
         //   Image.asset(
-        //     "assets/images/main_background.jpg",
+        //     ConstValue.url_AssetMainBackground,
         //     height: double.infinity,
         //     width: double.infinity,
         //     fit: BoxFit.fill,
@@ -83,7 +84,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/main_background.jpg"),
+            image: AssetImage(ConstValue.url_AssetMainBackground),
             fit: BoxFit.cover,
           ),
         ),
@@ -127,7 +128,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.bold,
                     fontSize: 12.sp,
-                    color: ThemeColor.colorHint_TextBox),
+                    color: ThemeColor.colorText_Label),
               ),
             ),
             Container(
@@ -243,7 +244,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SignUpPage()));
+                                  builder: (context) => const ResetPasswordPage()));
                         }),
                   ),
                 ],

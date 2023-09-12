@@ -1,4 +1,9 @@
 {
+  "MaXacThucKhongDungVuiLongNhapLai!": "Code confirm is incorrect, please try again!",
+  "CodeConfirmEmpty_Message": "Please input code!",
+  "ChangePassword": "Change password",
+  "MotEmailXacThuDaDuocGuiDenBanVuiLongCheckEmail!": "We have sent one code to your mail, please check again!",
+  "Send": "Send",
   "ResetPassword": "Reset password",
   "EmailChuaDuocDangKy!": "Email is not exists!",
   "MaXacThucKhongDungVuiLongThucHienLai": "Code confirm is incorrect, please try again!",
@@ -9,7 +14,7 @@
   "CodeConfirm": "Code confirm",
   "Confirm": "Confirm",
   "lblConfirmSignUp": "Confirm sign up",
-  "lblChatYourWay": "Chat anywhere, anytime",
+  "lblChatYourWay": "Chat anywhere, send anytime",
   "lblPassword": "Password",
   "lblPasswordConfirm": "Confirm Password",
   "lblUsername": "Username",

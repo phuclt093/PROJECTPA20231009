@@ -113,6 +113,9 @@ extension themeValue on ColorScheme {
   Color get colorText_Link =>
       this.brightness == Brightness.light ? Colors.amber : Colors.amber;
 
+  Color get colorText_Label =>
+      this.brightness == Brightness.light ? Colors.black : Colors.black;
+
 //Size
   static double TextBox_BorderRadius = 35.sp;
   static double Button_BorderRadius = 35.sp;

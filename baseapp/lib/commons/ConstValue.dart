@@ -12,6 +12,9 @@ class ConstValue {
   static String api_LoginCheckURL = "/api/login/LoginCheck";
   static String api_SendEmailVerifyURL = "/api/login/SendEmailVerify";
   static String api_CheckVerifyEmailURL = "/api/login/CheckVerifyEmail";
+  static String api_ForgetPassURL = "/api/login/ForgetPass";
+  static String api_ConfirmCodeChangePassURL = "/api/login/ConfirmCodeChangePass";
+  static const String url_AssetMainBackground = "assets/images/main_background.jpg";
 
   static List<DropdownMenuItem<Locale>> dropdownItems = [
     const DropdownMenuItem(child: Text("VI"), value: Locale("vi","VN")),

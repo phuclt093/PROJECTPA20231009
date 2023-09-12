@@ -1,8 +1,9 @@
-import 'dart:async';
 import 'dart:convert';
 import 'package:baseapp/enums/ErrorCode.dart';
 import 'package:baseapp/enums/MessageType.dart';
 import 'package:baseapp/commons/ConstValue.dart';
+import 'package:baseapp/pages/auth/ConfirmResetPasswordPage.dart';
+import 'package:baseapp/pages/auth/ConfirmSignUpPage.dart';
 import 'package:baseapp/pages/auth/LoginPage.dart';
 import 'package:baseapp/utils/DialogUtil.dart';
 import 'package:baseapp/widgets/CustomLanguageSelectBoxWidget.dart';
@@ -19,52 +20,24 @@ import 'package:baseapp/utils/LocalizationUtil.dart';
 import '../../utils/ImageUtil.dart';
 import '../../utils/HttpUtil.dart';
 
-class ConfirmSignUpPage extends StatefulWidget {
-  ConfirmSignUpPage({super.key, required this.email});
-
-  String email = "";
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({super.key});
 
   @override
-  ConfirmSignUpPageState createState() => ConfirmSignUpPageState();
+  ResetPasswordPageState createState() => ResetPasswordPageState();
 }
 
-class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
-    with TickerProviderStateMixin {
+class ResetPasswordPageState extends State<ResetPasswordPage> with TickerProviderStateMixin {
   bool finishLoading = false;
   bool _isNetworkAvail = true;
-  final TextEditingController codeEdit = TextEditingController();
-  FocusNode codeFocus = FocusNode();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? codeConfirm = "";
-
-  late Timer timerCountDown;
-  Duration duration = const Duration(minutes: 2);
+  final TextEditingController emailEdit = TextEditingController();
+  FocusNode emailFocus = FocusNode();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   BuildContext? dialogcontext;
-
-  void startTimer() {
-    const oneSec = Duration(seconds: 1);
-    timerCountDown = Timer.periodic(
-      oneSec,
-      (Timer timer) {
-        if (duration.inSeconds <= 0) {
-          setState(() {
-            timer.cancel();
-          });
-        } else {
-          setState(() {
-            duration = duration - oneSec;
-          });
-        }
-      },
-    );
-  }
-
-  void showInSnackBar(String value) {}
 
   @override
   void initState() {
     super.initState();
-    fnGetCodeConfirmInEmail(context);
   }
 
   @override
@@ -77,13 +50,14 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
       appBar: CommonUtil.SetAppBar(
           context: context,
           fontSize: 18.sp,
-          title: LocalizationUtil.translate("lblConfirmSignUp"),
+          title: LocalizationUtil.translate("ResetPassword"),
           background: ThemeColor.colorAppBar_Background,
           foreground: ThemeColor.colorAppBar_Foreground,
           colorFont: ThemeColor.colorAppBar_Font,
           colorIcon: ThemeColor.colorAppBar_Icon,
           onBack: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const LoginPage()));
           }),
       body: Container(
         width: double.infinity,
@@ -139,7 +113,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
               margin: EdgeInsets.only(
                   left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
               child: CustomTextFieldWidget(
-                  focusNode: codeFocus,
+                  focusNode: emailFocus,
                   borderRadius: themeValue.TextBox_BorderRadius,
                   coloBackground: Theme.of(context)
                       .colorScheme
@@ -155,44 +129,14 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
                   },
                   colorFont: ThemeColor.colorFont_TextBox,
                   colorFontHint: ThemeColor.colorHint_TextBox,
-                  textController: codeEdit,
-                  onFieldSubmitFunc: (v) {},
-                  hintLabel: LocalizationUtil.translate('CodeConfirm')!),
+                  textController: emailEdit,
+                  onFieldSubmitFunc: (v) {
+                  },
+                  hintLabel: LocalizationUtil.translate('lblEmail')!),
             ),
-            duration.inSeconds <= 0
-                ? Container(
-                    margin: EdgeInsets.only(
-                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
-                    child: InkWell(
-                        splashColor: Colors.transparent,
-                        child: Text(
-                          LocalizationUtil.translate('Resend')!,
-                          //login_btn
-                          style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              fontSize: 12.sp,
-                              color:
-                                  Theme.of(context).colorScheme.colorText_Link),
-                        ),
-                        onTap: () async {
-                          fnGetCodeConfirmInEmail(context);
-                        }),
-                  )
-                : Container(
-                    margin: EdgeInsets.only(
-                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
-                    child: Text(
-                      CommonUtil.DislayMMSS(duration),
-                      //login_btn
-                      style: TextStyle(
-                          fontSize: 10.sp,
-                          color:
-                              Theme.of(context).colorScheme.colorText_Link),
-                    ),
-                  ),
             Container(
               margin: EdgeInsets.only(
-                  left: 30.w, right: 30.w, bottom: 1.h, top: 5.h),
+                  left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
               child: InkWell(
                   splashColor: Colors.transparent,
                   child: Container(
@@ -205,7 +149,7 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
                         borderRadius: BorderRadius.circular(
                             themeValue.Button_BorderRadius)),
                     child: Text(
-                      LocalizationUtil.translate('Confirm')!,
+                      LocalizationUtil.translate('Send')!,
                       //login_btn
                       style: TextStyle(
                           fontSize: 14.sp,
@@ -221,7 +165,8 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
                       setState(() {
                         finishLoading = true;
                       });
-                      fnConfirmSignUp(context);
+                      fnSendReset(context);
+                      //signInWithEmailPassword(email!.trim(), pass!);
                     } else {
                       // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
                     }
@@ -246,96 +191,27 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
     }
   }
 
-  Future fnGetCodeConfirmInEmail(BuildContext context) async {
-    if (widget.email.isEmpty) {
+  Future fnSendReset(BuildContext context) async {
+    if (emailEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('lblEmailEmpty_Message')!,
           MessageType.ERROR);
       return;
     }
 
-    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
-    if (_isNetworkAvail) {
-      String ulr = ConstValue.api_SendEmailVerifyURL;
-      setFinishWorking(false);
-      Map<String, String> parameters = {
-        'email': widget.email,
-      };
-
-      try {
-        //Show loading
-        var ThemeColor = Theme.of(context).colorScheme;
-        var result = await DialogUtil.fncShowLoadingScreen(
-            context,
-            ThemeColor.colorIconProgress_Dialog,
-            ThemeColor.colorMessage_Dialog,
-            dialogcontext!);
-        if (!result) {
-          return false;
-        }
-
-        String resultStr = await HttpHelper.fetchPost(
-            context: context,
-            fnWorking: setFinishWorking,
-            parameters: parameters,
-            isAuth: false,
-            ulr: ulr);
-
-        final json = jsonDecode(resultStr);
-        var token = Token.fromJsonSignUp(json);
-        if (token != null) {
-          if (token.result == "OK") {
-            ToastMessage.showColoredToast(
-                LocalizationUtil.translate(token.message!), MessageType.OK);
-
-            if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(dialogcontext!);
-
-            duration = const Duration(minutes: 2);
-            startTimer();
-
-            return;
-          } else {
-            if (!mounted) return false;
-            await DialogUtil.hideLoadingScreen(dialogcontext!);
-            ToastMessage.showColoredToast(
-                LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
-            setFinishWorking(true);
-          }
-        } else {
-          if (!mounted) return false;
-          await DialogUtil.hideLoadingScreen(dialogcontext!);
-          ToastMessage.showColoredToast(
-              LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-          setFinishWorking(true);
-        }
-      } catch (e) {
-        if (!mounted) return false;
-        await DialogUtil.hideLoadingScreen(dialogcontext!);
-        ToastMessage.showColoredToast(
-            LocalizationUtil.translate('lblError')!, MessageType.ERROR);
-        setFinishWorking(true);
-      } finally {
-        setFinishWorking(true);
-      }
-    } else {}
-  }
-
-  Future fnConfirmSignUp(BuildContext context) async {
-    if (codeEdit.text.isEmpty) {
+    if (CommonUtil.CheckEmailFormat(emailEdit.text) == false) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('CodeConfirmEmpty_Message')!,
+          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!,
           MessageType.ERROR);
       return;
     }
 
     _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     if (_isNetworkAvail) {
-      String ulr = ConstValue.api_CheckVerifyEmailURL;
+      String ulr = ConstValue.api_ForgetPassURL;
       setFinishWorking(false);
       Map<String, String> parameters = {
-        'email': widget.email,
-        'randomnumber': codeEdit.text.toString(),
+        'email': emailEdit.text.toString(),
       };
 
       try {
@@ -364,22 +240,10 @@ class ConfirmSignUpPageState extends State<ConfirmSignUpPage>
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            // if (mounted) {
-            //   await DialogUtil.hideLoadingScreen(context);
-            // }
-
             if (!mounted) return false;
             await DialogUtil.hideLoadingScreen(dialogcontext!);
 
-            ToastMessage.showColoredToast(
-                LocalizationUtil.translate(token.message!)!, MessageType.OK);
 
-            setState(() {
-              if (mounted) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
-              }
-            });
 
             return;
           } else {

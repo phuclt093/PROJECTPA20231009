@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:baseapp/enums/ErrorCode.dart';
 import 'package:baseapp/enums/MessageType.dart';
@@ -19,29 +20,31 @@ import 'package:baseapp/utils/LocalizationUtil.dart';
 import '../../utils/ImageUtil.dart';
 import '../../utils/HttpUtil.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class ConfirmResetPasswordPage extends StatefulWidget {
+  ConfirmResetPasswordPage({super.key, required this.email});
+
+  String email;
 
   @override
-  SignUpPageState createState() => SignUpPageState();
+  ConfirmResetPasswordPageState createState() =>
+      ConfirmResetPasswordPageState();
 }
 
-class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
+class ConfirmResetPasswordPageState extends State<ConfirmResetPasswordPage>
+    with TickerProviderStateMixin {
   bool finishLoading = false;
   bool _isObsecure = true;
   bool _isObsecureConfirm = true;
 
   bool _isNetworkAvail = true;
-  final TextEditingController emailEdit = TextEditingController();
+  final TextEditingController codeEdit = TextEditingController();
   final TextEditingController passWordEdit = TextEditingController();
   final TextEditingController passWordConfirmEdit = TextEditingController();
-  FocusNode emailFocus = FocusNode();
+  FocusNode codeFocus = FocusNode();
   FocusNode passwordFocus = FocusNode();
   FocusNode passwordConfirmFocus = FocusNode();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   BuildContext? dialogcontext;
-
-  void showInSnackBar(String value) {}
 
   bool isPasswordDigitError_Message = false;
   bool isPasswordLengthError_Message = false;
@@ -50,9 +53,32 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
   bool isPasswordUppercaseError_Message = false;
   bool isPasswordHavingSpaces_Message = false;
 
+  late Timer timerCountDown;
+  Duration duration = const Duration(minutes: 2);
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    timerCountDown = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (duration.inSeconds <= 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            duration = duration - oneSec;
+          });
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+    duration = const Duration(minutes: 2);
+    startTimer();
   }
 
   @override
@@ -65,14 +91,13 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
       appBar: CommonUtil.SetAppBar(
           context: context,
           fontSize: 18.sp,
-          title: LocalizationUtil.translate("lblSignUp"),
+          title: LocalizationUtil.translate("ChangePassword"),
           background: ThemeColor.colorAppBar_Background,
           foreground: ThemeColor.colorAppBar_Foreground,
           colorFont: ThemeColor.colorAppBar_Font,
           colorIcon: ThemeColor.colorAppBar_Icon,
           onBack: () {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const LoginPage()));
+            Navigator.pop(context);
           }),
       body: Container(
         width: double.infinity,
@@ -123,32 +148,6 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     fontSize: 12.sp,
                     color: ThemeColor.colorText_Label),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
-              child: CustomTextFieldWidget(
-                  focusNode: emailFocus,
-                  borderRadius: themeValue.TextBox_BorderRadius,
-                  coloBackground: Theme.of(context)
-                      .colorScheme
-                      .colorBackground_TextBox
-                      .withOpacity(0.7),
-                  colorBorderEnabled: ThemeColor.colorBorder_TextBox,
-                  colorBorderFocus:
-                      Theme.of(context).colorScheme.colorBorderActive_TextBox,
-                  onChangeFunc: (String? value) {
-                    setState(() {
-                      // _username = value;
-                    });
-                  },
-                  colorFont: ThemeColor.colorFont_TextBox,
-                  colorFontHint: ThemeColor.colorHint_TextBox,
-                  textController: emailEdit,
-                  onFieldSubmitFunc: (v) {
-                    CommonUtil.ChangeFocus(context, emailFocus, passwordFocus);
-                  },
-                  hintLabel: LocalizationUtil.translate('lblEmail')!),
             ),
             Container(
               margin: EdgeInsets.only(
@@ -286,6 +285,60 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             ),
             Container(
               margin: EdgeInsets.only(
+                  left: 10.w, right: 10.w, bottom: 1.h, top: 2.h),
+              child: CustomTextFieldWidget(
+                  focusNode: codeFocus,
+                  borderRadius: themeValue.TextBox_BorderRadius,
+                  coloBackground: Theme.of(context)
+                      .colorScheme
+                      .colorBackground_TextBox
+                      .withOpacity(0.7),
+                  colorBorderEnabled: ThemeColor.colorBorder_TextBox,
+                  colorBorderFocus:
+                      Theme.of(context).colorScheme.colorBorderActive_TextBox,
+                  onChangeFunc: (String? value) {
+                    setState(() {
+                      // _username = value;
+                    });
+                  },
+                  colorFont: ThemeColor.colorFont_TextBox,
+                  colorFontHint: ThemeColor.colorHint_TextBox,
+                  textController: codeEdit,
+                  onFieldSubmitFunc: (v) {},
+                  hintLabel: LocalizationUtil.translate('CodeConfirm')!),
+            ),
+            duration.inSeconds <= 0
+                ? Container(
+                    margin: EdgeInsets.only(
+                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                    child: InkWell(
+                        splashColor: Colors.transparent,
+                        child: Text(
+                          LocalizationUtil.translate('Resend')!,
+                          //login_btn
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontSize: 12.sp,
+                              color:
+                                  Theme.of(context).colorScheme.colorText_Link),
+                        ),
+                        onTap: () async {
+                          fnGetCodeConfirmInEmail(context);
+                        }),
+                  )
+                : Container(
+                    margin: EdgeInsets.only(
+                        left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
+                    child: Text(
+                      CommonUtil.DislayMMSS(duration),
+                      //login_btn
+                      style: TextStyle(
+                          fontSize: 10.sp,
+                          color: Theme.of(context).colorScheme.colorText_Link),
+                    ),
+                  ),
+            Container(
+              margin: EdgeInsets.only(
                   left: 30.w, right: 30.w, bottom: 1.h, top: 1.h),
               child: InkWell(
                   splashColor: Colors.transparent,
@@ -299,7 +352,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                         borderRadius: BorderRadius.circular(
                             themeValue.Button_BorderRadius)),
                     child: Text(
-                      LocalizationUtil.translate('lblSignUp')!,
+                      LocalizationUtil.translate('Confirm')!,
                       //login_btn
                       style: TextStyle(
                           fontSize: 14.sp,
@@ -315,7 +368,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                       setState(() {
                         finishLoading = true;
                       });
-                      fnSignUp(context);
+                      fnChange(context);
                       //signInWithEmailPassword(email!.trim(), pass!);
                     } else {
                       // showSnackBar(LocalizationUtil.translate('internetmsg')!, context);
@@ -378,17 +431,85 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
     }
   }
 
-  Future fnSignUp(BuildContext context) async {
-    if (emailEdit.text.isEmpty) {
+  Future fnGetCodeConfirmInEmail(BuildContext context) async {
+    if (widget.email.isEmpty) {
       ToastMessage.showColoredToast(
           LocalizationUtil.translate('lblEmailEmpty_Message')!,
           MessageType.ERROR);
       return;
     }
 
-    if (CommonUtil.CheckEmailFormat(emailEdit.text) == false) {
+    _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
+    if (_isNetworkAvail) {
+      String ulr = ConstValue.api_ForgetPassURL;
+      setFinishWorking(false);
+      Map<String, String> parameters = {
+        'email': widget.email,
+      };
+
+      try {
+        //Show loading
+        var ThemeColor = Theme.of(context).colorScheme;
+        var result = await DialogUtil.fncShowLoadingScreen(
+            context,
+            ThemeColor.colorIconProgress_Dialog,
+            ThemeColor.colorMessage_Dialog,
+            dialogcontext!);
+        if (!result) {
+          return false;
+        }
+
+        String resultStr = await HttpHelper.fetchPost(
+            context: context,
+            fnWorking: setFinishWorking,
+            parameters: parameters,
+            isAuth: false,
+            ulr: ulr);
+
+        final json = jsonDecode(resultStr);
+        var token = Token.fromJsonSignUp(json);
+        if (token != null) {
+          if (token.result == "OK") {
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!), MessageType.OK);
+
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
+
+            duration = const Duration(minutes: 2);
+            startTimer();
+
+            return;
+          } else {
+            if (!mounted) return false;
+            await DialogUtil.hideLoadingScreen(dialogcontext!);
+            ToastMessage.showColoredToast(
+                LocalizationUtil.translate(token.message!)!, MessageType.ERROR);
+            setFinishWorking(true);
+          }
+        } else {
+          if (!mounted) return false;
+          await DialogUtil.hideLoadingScreen(dialogcontext!);
+          ToastMessage.showColoredToast(
+              LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+          setFinishWorking(true);
+        }
+      } catch (e) {
+        if (!mounted) return false;
+        await DialogUtil.hideLoadingScreen(dialogcontext!);
+        ToastMessage.showColoredToast(
+            LocalizationUtil.translate('lblError')!, MessageType.ERROR);
+        setFinishWorking(true);
+      } finally {
+        setFinishWorking(true);
+      }
+    } else {}
+  }
+
+  Future fnChange(BuildContext context) async {
+    if (codeEdit.text.isEmpty) {
       ToastMessage.showColoredToast(
-          LocalizationUtil.translate('lblEmailFormatInvalid_Message')!,
+          LocalizationUtil.translate('CodeConfirmEmpty_Message')!,
           MessageType.ERROR);
       return;
     }
@@ -460,10 +581,11 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
 
     _isNetworkAvail = await CommonUtil.IsNetworkAvailable();
     if (_isNetworkAvail) {
-      String ulr = ConstValue.api_RegisterUserURL;
+      String ulr = ConstValue.api_ConfirmCodeChangePassURL;
       setFinishWorking(false);
       Map<String, String> parameters = {
-        'email': emailEdit.text.toString(),
+        'email': widget.email,
+        'code': codeEdit.text.toString(),
         'pass': passWordEdit.text.toString(),
         'retypepass': passWordConfirmEdit.text.toString()
       };
@@ -494,10 +616,6 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
             ToastMessage.showColoredToast(
                 LocalizationUtil.translate(token.message!), MessageType.OK);
 
-            // if (mounted) {
-            //   await DialogUtil.hideLoadingScreen(context);
-            // }
-
             if (!mounted) return false;
             await DialogUtil.hideLoadingScreen(dialogcontext!);
 
@@ -507,7 +625,7 @@ class SignUpPageState extends State<SignUpPage> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ConfirmSignUpPage(email: emailEdit.text)));
+                            ConfirmSignUpPage(email: codeEdit.text)));
               }
             });
 
